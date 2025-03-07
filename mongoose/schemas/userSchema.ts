@@ -35,12 +35,12 @@ export const UserSchema: Schema = new Schema<IUser>({
   profilePic: { type: String, default: "" },
   vansOwned: {
     type: [Schema.Types.ObjectId],
-    ref: "vans",
+    ref: "Van",
     default: [],
   },
   bookings: {
     type: [Schema.Types.ObjectId],
-    ref: "bookings",
+    ref: "Booking",
     default: [],
   },
 });
