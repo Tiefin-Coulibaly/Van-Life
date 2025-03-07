@@ -61,7 +61,7 @@ export const VanSchema: Schema = new Schema<IVan>({
     },
     reviewsId: { 
       type: [Types.ObjectId], 
-      ref: "Review",
+      ref: "reviews",
       default: []
     },
     features: {
@@ -96,7 +96,7 @@ export const VanSchema: Schema = new Schema<IVan>({
     },
     ownerId: { 
       type: Schema.Types.ObjectId, 
-      ref: "User", 
+      ref: "users", 
       required: [true, "Owner ID is required"]
     }
   }, { timestamps: true });
