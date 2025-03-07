@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 
 export interface IReview extends Document {
-  userId: Types.ObjectId;
-  comment: string;
-  rating: number;
+  vanId:  Types.ObjectId;
+  renterId: Types.ObjectId;
+  comment?: string;
+  rating: 1 | 2 | 3 | 4 | 5;
   date: Date;
 }
