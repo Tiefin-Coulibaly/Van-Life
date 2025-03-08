@@ -1,5 +1,5 @@
-import { model } from "mongoose";
+import { model, models } from "mongoose";
 import { IPayment } from "@/types/payment";
 import { PaymentSchema } from "../schemas/paymentSchema";
 
-export const PaymentModel = model<IPayment>("Payment", PaymentSchema)
+export const PaymentModel = models.Payment || model<IPayment>("Payment", PaymentSchema)
