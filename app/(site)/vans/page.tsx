@@ -5,9 +5,9 @@ import VansList from "@/components/vans/VanList";
 
 const VansPage = () => {
   return (
-    <main className="mt-30">
+    <main className="mt-30 ">
       <Heading1 title="Explore our van options" />
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <section className=" grid  grid-cols-1 gap-6 py-6  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <Suspense
           fallback={Array.from({ length: 20 }).map((_, index) => (
             <VanCardSkeleton key={index} />
@@ -21,3 +21,8 @@ const VansPage = () => {
 };
 
 export default VansPage;
+
+
+// TODO: handle the layout of the h1 on this page
+// TODO: add filtering feature : ask chat gpt the best filtering feature to add for a new issue
+// TODO: handle the vans detail page (for new issue)
