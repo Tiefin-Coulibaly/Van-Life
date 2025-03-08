@@ -6,7 +6,6 @@ async function runMongoConnection() {
   try {
     const mongoConnection = await connect(process.env.MONGO_URI!);
     console.log("✅ Successfully connected to MongoDB");
-    console.log(mongoConnection.connection.host);
   } catch (error) {
     console.error("❌ Connection to MongoDB failed:", error);
   }
