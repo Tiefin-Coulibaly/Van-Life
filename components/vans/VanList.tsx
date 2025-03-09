@@ -1,8 +1,12 @@
+import { VanListProp } from "@/types/vanListProp";
 import VanCard from "./VanCard";
-import { fetchAllVans } from "@/app/lib/data/data";
+import { fetchAllVans, fetchVansFilter } from "@/app/lib/data/vansData";
 
-const VansList = async () => {
+const VansList = async ({types}:VanListProp) => {
     const vans = await fetchAllVans();
+    const vansFiltered = await fetchVansFilter(types)
+
+    
   
     return (
       <>
