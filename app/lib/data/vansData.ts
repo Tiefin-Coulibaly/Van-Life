@@ -28,37 +28,48 @@ export const fetchAllVans = async (): Promise<
   }
 };
 
-export const fetchVansFilter = async (searchParams: ISearchParams) => {
+export const fetchVansFilter = async (
+  searchParams: ISearchParams,
+): Promise<(IVan & { _id: Types.ObjectId }[]) | any[]> => {
   try {
-    const query = {};
+    const query: Record<string, any> = {}; // Define flexible query object
+    const orConditions: any[] = []; // Array to store OR conditions
 
     for (let param in searchParams) {
+      const value = searchParams[param];
+
       if (param === "type") {
-        if (typeof param === "string") {
-          query[param] = searchParams[param];
-        } else query["type"] = { $in: searchParams[param] };
+        if (typeof value === "string") {
+          query[param] = value;
+        } else {
+          query["type"] = { $in: value };
+        }
       } else if (param === "min") {
-        query["price"] = { $gte: parseInt(searchParams[param] ?? "0") };
+        query["price"] = { $gte: parseInt(value ?? "0") };
       } else if (param === "max") {
-        query["price"] = { $lte: parseInt(searchParams[param] ?? "0") };
+        query["price"] = { $lte: parseInt(value ?? "0") };
       } else if (param === "date") {
         query["bookedDates"] = {
-          $not: { $elemMatch: { $gte: searchParams[param] } },
+          $not: { $elemMatch: { $gte: value } },
         };
-      } else query[param] = searchParams[param];
+      } else if (param === "city" || param === "country") {
+        // Add each condition to the OR array
+        orConditions.push({
+          [`location.${param}`]: { $regex: new RegExp(value, "i") },
+        });
+      }
     }
-    // extract the keys
-    // extract the values
 
-    // let filteredVans: (IVan & { _id: Types.ObjectId })[];
-    // if (typeof vansTypes === "string") {
-    //   filteredVans = await VanModel.find({ type: vansTypes });
-    // } else {
-    //   filteredVans = await VanModel.find({ type: { $in: vansTypes } });
-    // }
-    // console.log(filteredVans)
-    // return filteredVans;
+    // If there are city or country filters, add $or to the query
+    if (orConditions.length > 0) {
+      query.$or = orConditions;
+    }
+
+    console.log("Generated Query:", query); // Debugging
+    const vans = await VanModel.find(query);
+    return vans;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching vans:", error);
+    return [];
   }
 };
