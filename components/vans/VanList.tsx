@@ -1,12 +1,16 @@
 import { VanListProp } from "@/types/vanListProp";
 import VanCard from "./VanCard";
 import { fetchAllVans, fetchVansFilter } from "@/app/lib/data/vansData";
+import { ISearchParams } from "@/types/searchParams";
 
-const VansList = async ({types}:VanListProp) => {
+const VansList = async (props:{searchParams?:ISearchParams}) => {
     const vans = await fetchAllVans();
-    const vansFiltered = await fetchVansFilter(types)
-
+    if (Object.keys(props.searchParams ?? {}).length > 0) {
+        // const vansFiltered = await fetchVansFilter(props.searchParams)
+    }
     
+
+
   
     return (
       <>

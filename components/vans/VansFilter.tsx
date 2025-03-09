@@ -37,8 +37,12 @@ const VansFilter: React.FC = () => {
 
   const handleLocationFilter = useDebouncedCallback((value: string) => {
     if (value) {
-      params.set("cityOrCountry", value.toString());
-    } else params.delete("cityOrCountry");
+      params.set("city", value.toString());
+      params.set("country", value.toString());
+
+    } else {
+        params.delete("city");
+        params.delete("country")};
 
     router.push(`${currentPath}?${params.toString()}`);
   }, 250);

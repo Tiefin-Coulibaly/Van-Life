@@ -3,16 +3,11 @@ import VanCardSkeleton from "@/components/vans/VanCardSkeleton";
 import { Suspense } from "react";
 import VansList from "@/components/vans/VanList";
 import VansFilter from "@/components/vans/VansFilter";
+import { ISearchParams } from "@/types/searchParams";
 
-const VansPage = async (props: {
-  searchParams?: Promise<{
-    type: string[];
-  }>;
-}) => {
-
-  const searchParams = await props.searchParams
-  const types = searchParams?.type || []
-  
+const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
+  const searchParams = await props.searchParams;
+  console.log(searchParams)
 
   return (
     <main className="mt-30 ">
@@ -25,7 +20,7 @@ const VansPage = async (props: {
             <VanCardSkeleton key={index} />
           ))}
         >
-          <VansList types={types}/>
+          <VansList searchParams={searchParams} />
         </Suspense>
       </section>
     </main>
