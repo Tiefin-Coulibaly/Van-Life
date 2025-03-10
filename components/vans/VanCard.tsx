@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { VanCardProps } from "@/types/vanProp";
+import Link from "next/link";
 
 
-const VanCard: React.FC<VanCardProps> = ({ name, price, type, location, rating, image }) => {
+const VanCard: React.FC<VanCardProps> = ({ name, price, type, location, rating, image}) => {
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 duration-300">
       <div className="relative w-full h-56">

@@ -1,24 +1,32 @@
+import { VanListProp } from "@/types/vanListProp";
 import VanCard from "./VanCard";
-import { fetchAllVans } from "@/app/lib/data/data";
+import { fetchAllVans, fetchVansFilter } from "@/app/lib/data/vansData";
+import { ISearchParams } from "@/types/searchParams";
+import { IVan } from "@/types/van";
+import { Types } from "mongoose";
+import Link from "next/link";
 
-const VansList = async () => {
-    const vans = await fetchAllVans();
-  
-    return (
-      <>
-        {vans.map((van) => (
-          <VanCard
-            key={van._id.toString()}
-            name={van.name}
-            price={van.price}
-            image={van.images[0]}
-            location={{ city: van.location.city, country: van.location.country }}
-            type={van.type}
-            rating={van.rating ?? 0}
-          />
-        ))}
-      </>
-    );
-  };
+const VansList = async (props: { searchParams?: ISearchParams }) => {
+  let vans: (IVan & { _id: Types.ObjectId })[] | any[];
+  if (Object.keys(props.searchParams ?? {}).length > 0) {
+    vans = await fetchVansFilter(props.searchParams!);
+  } else vans = await fetchAllVans();
 
-  export default VansList
+  return (
+    <>
+      {vans.map((van: IVan & { _id: Types.ObjectId }) => (
+        <Link href={`/vans/${van._id}`}><VanCard
+          key={van._id.toString()}
+          name={van.name}
+          price={van.price}
+          image={van.images[0]}
+          location={{ city: van.location.city, country: van.location.country }}
+          type={van.type}
+          rating={van.rating ?? 0}
+        /></Link>
+      ))}
+    </>
+  );
+};
+
+export default VansList;
