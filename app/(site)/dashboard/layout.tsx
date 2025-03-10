@@ -10,12 +10,12 @@ const DashboardLayout = ({children}:{children:React.ReactNode}) => {
       <aside className="w-64 bg-white shadow-md p-6 hidden md:block">
         <h2 className="text-xl font-bold text-gray-900">User Dashboard</h2>
         <nav className="mt-6 space-y-4">
-          <Link href="#" className="block py-2 px-3 bg-gray-200 rounded">Overview</Link>
-          <Link href="#" className="block py-2 px-3 hover:bg-gray-200 rounded">My Vans</Link>
-          <Link href="#" className="block py-2 px-3 hover:bg-gray-200 rounded">Bookings</Link>
-          <Link href="#" className="block py-2 px-3 hover:bg-gray-200 rounded">Payments</Link>
-          <Link href="#" className="block py-2 px-3 hover:bg-gray-200 rounded">Notifications</Link>
-          <Link href="#" className="block py-2 px-3 hover:bg-gray-200 rounded">Profile</Link>
+          <Link href="/dashboard" className="block py-2 px-3 bg-gray-200 rounded">Overview</Link>
+          <Link href="/dashboard/myvans" className="block py-2 px-3 hover:bg-gray-200 rounded">My Vans</Link>
+          <Link href="/dashboard/bookings" className="block py-2 px-3 hover:bg-gray-200 rounded">Bookings</Link>
+          <Link href="/dashboard/payments" className="block py-2 px-3 hover:bg-gray-200 rounded">Payments</Link>
+          <Link href="/dashboard/notifications" className="block py-2 px-3 hover:bg-gray-200 rounded">Notifications</Link>
+          <Link href="/dashboard/profile" className="block py-2 px-3 hover:bg-gray-200 rounded">Profile</Link>
         </nav>
       </aside>
 
