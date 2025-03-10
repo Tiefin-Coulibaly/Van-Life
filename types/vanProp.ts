@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface VanCardProps {
   name: string;
   price: number;

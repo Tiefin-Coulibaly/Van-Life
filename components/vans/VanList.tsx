@@ -4,6 +4,7 @@ import { fetchAllVans, fetchVansFilter } from "@/app/lib/data/vansData";
 import { ISearchParams } from "@/types/searchParams";
 import { IVan } from "@/types/van";
 import { Types } from "mongoose";
+import Link from "next/link";
 
 const VansList = async (props: { searchParams?: ISearchParams }) => {
   let vans: (IVan & { _id: Types.ObjectId })[] | any[];
@@ -14,7 +15,7 @@ const VansList = async (props: { searchParams?: ISearchParams }) => {
   return (
     <>
       {vans.map((van: IVan & { _id: Types.ObjectId }) => (
-        <VanCard
+        <Link href={`/vans/${van._id}`}><VanCard
           key={van._id.toString()}
           name={van.name}
           price={van.price}
@@ -22,7 +23,7 @@ const VansList = async (props: { searchParams?: ISearchParams }) => {
           location={{ city: van.location.city, country: van.location.country }}
           type={van.type}
           rating={van.rating ?? 0}
-        />
+        /></Link>
       ))}
     </>
   );
