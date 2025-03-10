@@ -6,6 +6,7 @@ const page = async (props: { params: Promise<{ id: Types.ObjectId }> }) => {
   const params = await props.params;
   const id = params.id;
   const van = await fetchVanById(id);
+  
   console.log(van);
 
   return (

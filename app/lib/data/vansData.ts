@@ -76,8 +76,7 @@ export const fetchVansFilter = async (
 
 export const fetchVanById = async (id: Types.ObjectId) => {
   try {
-    const van: (IVan & { _id: Types.ObjectId }) | null =
-      await VanModel.findById(id);
+    const van = await VanModel.findById(id).lean() as (IVan & { _id: Types.ObjectId }) | null;
     if (van) {
       return van;
     } else throw new Error("Failed to fetch van by id");
