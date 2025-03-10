@@ -23,26 +23,44 @@ const Table = () => {
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>Van name</p>
+                      <div className="relative size-20">
+                        <Image
+                          src="/van1_thumbnail.jpg"
+                          className="rounded-lg "
+                          alt={`Van's thumbnail`}
+                          layout="fill"
+                        />
+                      </div>
+                      <p className="ml-2">Vans</p>
                     </div>
-                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-sm text-gray-500">$200</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-xl font-medium">currency</p>
-                    <p>date</p>
+                    <span
+                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${
+                        available
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {available ? (
+                        <>
+                          <FaCheckCircle className="mr-1 text-green-600" />{" "}
+                          Available
+                        </>
+                      ) : (
+                        <>
+                          <FaExclamationTriangle className="mr-1 text-red-600" />{" "}
+                          Not Available
+                        </>
+                      )}
+                    </span>
                   </div>
                   <div className="flex justify-end gap-2">
-                    update invoice delete invoice
+                    <UpdateInvoice id="id" />
+                    <DeleteInvoice id="id" />
                   </div>
                 </div>
               </div>
@@ -85,7 +103,7 @@ const Table = () => {
                   <td className="whitespace-nowrap px-3 py-3 ">$200</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <span
-                      className={`flex justify-center items-center rounded-lg px-3 py-1 text-sm font-semibold ${
+                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${
                         available
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700"
@@ -106,8 +124,8 @@ const Table = () => {
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                    <UpdateInvoice id="id" />
-                    <DeleteInvoice id="id" />
+                      <UpdateInvoice id="id" />
+                      <DeleteInvoice id="id" />
                     </div>
                   </td>
                 </tr>
