@@ -10,9 +10,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100 mt-15">
+    <div className="flex min-h-screen bg-gray-100 mt-15 md:mt-30">
       {/* Mobile App Navbar */}
-      <header className="md:hidden fixed top-15 left-0 w-full bg-white shadow-md p-4 flex items-center justify-between z-50">
+      <header className="md:hidden  fixed top-15 md:top-0 left-0 w-full bg-white shadow-md p-4 flex items-center justify-between z-50">
         <h2 className="text-lg font-bold text-gray-900">User Dashboard</h2>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -25,7 +25,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Sidebar (For Dashboard Navigation) */}
       <aside
-        className={`fixed z-99999 inset-y-0 top-35 left-0 w-64 bg-white shadow-md p-6 transform transition-transform duration-300 ease-in-out
+        className={`fixed z-99999 inset-y-0 top-28 md:top-0 left-0 w-64 bg-white shadow-md p-6 transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative`}
       >
         <button
