@@ -1,52 +1,56 @@
-"use client";
-
 import {
-  UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
-  CurrencyDollarIcon,
   TruckIcon,
-  StarIcon,
+  CalendarIcon,
+  CurrencyDollarIcon,
+  BellAlertIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
-  {
-    name: "Income",
-    href: "/dashboard/income",
-    icon: CurrencyDollarIcon,
-  },
-  { name: "Vans", href: "/dashboard/vans", icon: TruckIcon },
-  { name: "Reviews", href: "/dashboard/reviews", icon: StarIcon },
-];
-
-export default function NavLinks() {
-  const pathname = usePathname();
-  return (
-    <>
-      {links.map((link) => {
-        const LinkIcon = link.icon;
-        return (
-          <Link
-            key={link.name}
-            href={link.href}
-            className={clsx(
-              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
-              {
-                "bg-sky-100 text-blue-600": pathname === link.href,
-              },
-            )}
-          >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </Link>
-        );
-      })}
-    </>
-  );
-}
+/**
+ * Navigation Links Configuration
+ *
+ * This array defines the reusable navigation links for the user dashboard.
+ * Each link includes:
+ * - `name`: The display name of the navigation item.
+ * - `href`: The URL path for the navigation link.
+ * - `icon`: The associated Heroicon component for visual representation.
+ *
+ * The icons are imported from Heroicons and styled with a width of `w-6`.
+ *
+ * @constant
+ * @type {Array<{ name: string; href: string; icon: React.ReactElement }>}
+ */
+export const links: { name: string; href: string; icon: React.ReactElement }[] =
+  [
+    {
+      name: "Home",
+      href: "/dashboard",
+      icon: <HomeIcon className="w-6" />,
+    },
+    {
+      name: "Vans",
+      href: "/dashboard/uservans",
+      icon: <TruckIcon className="w-6" />,
+    },
+    {
+      name: "Bookings",
+      href: "/dashboard/bookings",
+      icon: <CalendarIcon className="w-6" />,
+    },
+    {
+      name: "Payments",
+      href: "/dashboard/payments",
+      icon: <CurrencyDollarIcon className="w-6" />,
+    },
+    {
+      name: "Notifications",
+      href: "/dashboard/notifications",
+      icon: <BellAlertIcon className="w-6" />,
+    },
+    {
+      name: "Profile",
+      href: "/dashboard/profile",
+      icon: <UserIcon className="w-6" />,
+    },
+  ];

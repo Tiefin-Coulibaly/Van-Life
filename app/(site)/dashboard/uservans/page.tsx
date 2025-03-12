@@ -1,10 +1,10 @@
-import MyVans from "@/components/dashboard/myVans/MyVans";
+import UserVans from "@/components/dashboard/userVans/UserVans";
 
 import React from 'react'
 
 const page = () => {
   return (
-    <MyVans/>
+    <UserVans/>
   )
 }
 
