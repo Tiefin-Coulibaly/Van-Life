@@ -14,7 +14,7 @@ import {
   handleClearAllFilters,
   toggleClearAllFilter,
   toggleTypeClearFilter,
-} from "@/app/lib/utils";
+} from "@/app/lib/utils/vansFiltering";
 
 /**
  * **VansFilter Component**

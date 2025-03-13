@@ -2,7 +2,8 @@ import { IUser } from "@/types/user";
 import { Schema } from "mongoose";
 
 export const UserSchema: Schema = new Schema<IUser>({
-  fullName: { type: String, required: [true, "Full name is required"] },
+  firstName: { type: String, required: [true, "First name is required"] },
+  lastName: { type: String, required: [true, "Last name is required"] },
   email: {
     type: String,
     required: [true, "Email is required"],
