@@ -3,6 +3,7 @@
 import { UserRegistration } from "@/types/userRegistrationForm";
 import { UserModel } from "@/mongoose/models/userModel";
 import { saltAndHashPassword } from "./utils/password";
+import { signIn } from "@/auth"
 
 export const createUser = async (
   userData: UserRegistration,
@@ -44,3 +45,7 @@ export const createUser = async (
     };
   }
 };
+
+export const signUserIn = async (formData:FormData) => {
+    await signIn("credentials", formData,  {callbackUrl: "/dashboard"})
+  }
