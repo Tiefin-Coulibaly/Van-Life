@@ -49,9 +49,23 @@ export const createUser = async (
 };
 
 export const signUserIn = async (formData: FormData) => {
-  await signIn("credentials", {
-    email: formData.get("email"),
-    password: formData.get("password"),
-    redirectTo: "/dashboard",
-  });
+  try {
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
+
+    // If successful, redirect manually
+    return { success: true, redirectTo: "/dashboard" };
+  } catch (error) {
+    console.error("Authentication error:", error.type);
+    // console.log(error.Error)
+    return error.type === "CredentialsSignin"
+      ? { error: "Invalid Credentials. Please try again." }
+      : {
+          error:
+            "An unexpected error occurred. We are currently working on it. Please try again later",
+        };
+  }
 };

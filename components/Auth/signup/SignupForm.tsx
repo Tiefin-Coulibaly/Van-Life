@@ -16,7 +16,7 @@ import Link from "next/link";
  * @returns {JSX.Element} The signup form component.
  */
 
-const SignupForm = (): JSX.Element => {
+const SignupForm = ():React.ReactElement => {
   // Initialize the form with React Hook Form
   const {
     register,
@@ -196,7 +196,10 @@ const SignupForm = (): JSX.Element => {
       <div className="mt-12.5 border-t border-stroke py-5 text-center dark:border-strokedark">
         <p>
           Already have an account?{" "}
-          <Link href="/auth/signin" className="font-bold">
+          <Link
+            href="/auth/signin"
+            className="text-black hover:text-primary dark:text-white hover:dark:text-primary"
+          >
             Sign In
           </Link>
         </p>

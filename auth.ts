@@ -37,9 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/auth/signin", // Specify your sign-in page
-    // signOut: "/logout", // Optional
-    // error: "/error"
+    signIn: "/auth/signin", 
   },
   callbacks: {
     async redirect({ url, baseUrl }) {

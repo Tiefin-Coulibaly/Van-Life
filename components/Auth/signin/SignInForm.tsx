@@ -1,9 +1,51 @@
+/**
+ * SignInForm Component
+ * 
+ * A form component that handles user authentication through email and password.
+ * Features include:
+ * - Email and password input fields
+ * - Error message display for failed authentication attempts
+ * - "Remember me" checkbox
+ * - Forgot password link
+ * - Redirect to dashboard on successful login
+ * - Sign up link for new users
+ * 
+ * @component
+ * <SignInForm />
+ */
+
 import Link from "next/link";
 import { signUserIn } from "@/app/lib/actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SignInForm = () => {
+  // State for tracking authentication errors
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  /**
+   * Handles form submission for user authentication
+   * 
+   * @param {FormData} formData - Form data containing email and password
+   * @returns {Promise<void>}
+   */
+  async function handleSubmit(formData: FormData) {
+    setError(null); // Clear previous errors
+
+    const result = await signUserIn(formData);
+
+    // Handle authentication result
+    if (result?.error) {
+      setError(result.error);
+    } else if (result?.success && result.redirectTo) {
+      router.push(result.redirectTo);
+    }
+  }
+
   return (
-    <form  action={signUserIn}>
+    <form action={handleSubmit}>
+      {/* Email and Password Input Fields */}
       <div className="mb-7.5 flex flex-col gap-7.5 lg:mb-12.5 lg:flex-row lg:justify-between lg:gap-14">
         <input
           type="text"
@@ -20,8 +62,17 @@ const SignInForm = () => {
         />
       </div>
 
+      {/* Error message display - only shown when authentication fails */}
+      {error && (
+        <div className="my-2 rounded bg-red-100 p-3 text-center text-red-700">
+          {error}
+        </div>
+      )}
+
+      {/* Remember Me Checkbox, Forgot Password Link, and Submit Button */}
       <div className="flex flex-wrap items-center gap-10 md:justify-between xl:gap-15">
         <div className="flex flex-wrap gap-4 md:gap-10">
+          {/* Custom styled checkbox for "Keep me signed in" */}
           <div className="mb-4 flex items-center">
             <input
               id="default-checkbox"
@@ -53,11 +104,13 @@ const SignInForm = () => {
             </label>
           </div>
 
+          {/* Forgot Password Link */}
           <a href="#" className="hover:text-primary">
             Forgot Password?
           </a>
         </div>
 
+        {/* Login Button with Arrow Icon */}
         <button
           aria-label="login with email and password"
           className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho"
@@ -79,6 +132,7 @@ const SignInForm = () => {
         </button>
       </div>
 
+      {/* Sign Up Link Footer */}
       <div className="mt-12.5 border-t border-stroke py-5 text-center dark:border-strokedark">
         <p>
           Don't have an account?{" "}
