@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "@/mongoose/models/userModel";
 import { IUser } from "@/types/user";
-import { runMongoConnection } from "../connectDB";
+import { runMongoConnection } from "./connectDB";
 
 // connect to db
 runMongoConnection();
@@ -38,4 +38,8 @@ export const getUserFromDb = async (
     console.log(`error getting the user: ${error}`);
     return null;
   }
+};
+
+export const findUserByEmail = async (userEmail: string) => {
+  return UserModel.findOne({ email: userEmail });
 };

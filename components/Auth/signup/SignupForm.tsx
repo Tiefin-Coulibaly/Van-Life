@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { UserRegistration } from "@/types/userRegistrationForm";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /**
  * SignupForm Component
@@ -16,7 +17,7 @@ import Link from "next/link";
  * @returns {JSX.Element} The signup form component.
  */
 
-const SignupForm = ():React.ReactElement => {
+const SignupForm = (): React.ReactElement => {
   // Initialize the form with React Hook Form
   const {
     register,
@@ -26,6 +27,8 @@ const SignupForm = ():React.ReactElement => {
 
   // Loading state to manage form submission
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   /**
    * Handles form submission
@@ -46,6 +49,9 @@ const SignupForm = ():React.ReactElement => {
     // Show success or error message based on the API response
     if (response.success) {
       toast.success(response.message);
+      setTimeout(() => {
+        router.push("/auth/signin");
+      }, 1500);
     } else {
       toast.error(response.message);
     }

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { VanModel } from "@/mongoose/models/vanModel";
 import { IVan } from "@/types/van";
 import { ISearchParams } from "@/types/searchParams";
-import { runMongoConnection } from "../connectDB";
+import { runMongoConnection } from "../utils/connectDB";
 
 
 // connect to the db

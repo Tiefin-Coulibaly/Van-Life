@@ -15,7 +15,7 @@
  */
 
 import Link from "next/link";
-import { signUserIn } from "@/app/lib/actions";
+import { signUserInWithCredentials } from "@/app/lib/actions";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -33,7 +33,7 @@ const SignInForm = () => {
   async function handleSubmit(formData: FormData) {
     setError(null); // Clear previous errors
 
-    const result = await signUserIn(formData);
+    const result = await signUserInWithCredentials(formData);
 
     // Handle authentication result
     if (result?.error) {

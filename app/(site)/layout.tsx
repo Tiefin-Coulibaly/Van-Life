@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`dark:bg-black ${inter.className} container mx-auto px-4 md:px-8`}
+        className={`dark:bg-black ${inter.className} container mx-auto px-4 md:px-8 min-h-screen flex flex-col`}
       >
         <ThemeProvider
           enableSystem={false}
@@ -32,7 +32,7 @@ export default function RootLayout({
           {children}
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={1500}
             hideProgressBar={false}
             newestOnTop
             closeOnClick

@@ -2,10 +2,9 @@
 
 import { UserRegistration } from "@/types/userRegistrationForm";
 import { UserModel } from "@/mongoose/models/userModel";
-import { saltAndHashPassword } from "./utils/password";
+import { saltAndHashPassword } from "./utils/authentication";
 import { signIn } from "@/auth";
-import { runMongoConnection } from "./connectDB";
-import { redirect } from "next/navigation";
+import { runMongoConnection } from "./utils/connectDB";
 
 // connect to db
 runMongoConnection();
@@ -48,7 +47,7 @@ export const createUser = async (
   }
 };
 
-export const signUserIn = async (formData: FormData) => {
+export const signUserInWithCredentials = async (formData: FormData) => {
   try {
     await signIn("credentials", {
       email: formData.get("email"),
@@ -59,7 +58,7 @@ export const signUserIn = async (formData: FormData) => {
     // If successful, redirect manually
     return { success: true, redirectTo: "/dashboard" };
   } catch (error) {
-    console.error("Authentication error:", error.type);
+    console.error("Credentials Authentication error:", error.type);
     // console.log(error.Error)
     return error.type === "CredentialsSignin"
       ? { error: "Invalid Credentials. Please try again." }
@@ -68,4 +67,10 @@ export const signUserIn = async (formData: FormData) => {
             "An unexpected error occurred. We are currently working on it. Please try again later",
         };
   }
+};
+
+export const signUserInWithGoogle = async () => {
+  await signIn("google", {
+    redirectTo: "/dashboard",
+  });
 };
