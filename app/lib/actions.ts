@@ -3,7 +3,12 @@
 import { UserRegistration } from "@/types/userRegistrationForm";
 import { UserModel } from "@/mongoose/models/userModel";
 import { saltAndHashPassword } from "./utils/password";
-import { signIn } from "@/auth"
+import { signIn } from "@/auth";
+import { runMongoConnection } from "./connectDB";
+import { redirect } from "next/navigation";
+
+// connect to db
+runMongoConnection();
 
 export const createUser = async (
   userData: UserRegistration,
@@ -18,22 +23,19 @@ export const createUser = async (
       };
     }
 
-    // format the data
-    for (let key in userData) {
-      if (key === "email") {
-        userData[key] = userData[key].toLowerCase();
-      } else if (key === "firstName" || key === "lastName") {
-        userData[key] =
-          userData[key].charAt(0).toUpperCase() +
-          userData[key].slice(1).toLowerCase();
-      } else if (key === "password") {
-        const hashedPassword = await saltAndHashPassword(userData[key]);
-        userData[key] = hashedPassword;
-      }
-    }
-    console.log(userData);
+    // Format fields properly
+    userData.email = userData.email.toLowerCase();
+    userData.firstName =
+      userData.firstName.charAt(0).toUpperCase() +
+      userData.firstName.slice(1).toLowerCase();
+    userData.lastName =
+      userData.lastName.charAt(0).toUpperCase() +
+      userData.lastName.slice(1).toLowerCase();
 
-    const newUser = await new UserModel(userData);
+    // Explicitly hash password before saving
+    userData.password = await saltAndHashPassword(userData.password);
+
+    const newUser = new UserModel(userData);
     await newUser.save(); // Ensure save is awaited
 
     return { success: true, message: "User created successfully!" };
@@ -46,6 +48,10 @@ export const createUser = async (
   }
 };
 
-export const signUserIn = async (formData:FormData) => {
-    await signIn("credentials", formData,  {callbackUrl: "/dashboard"})
-  }
+export const signUserIn = async (formData: FormData) => {
+  await signIn("credentials", {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    redirectTo: "/dashboard",
+  });
+};

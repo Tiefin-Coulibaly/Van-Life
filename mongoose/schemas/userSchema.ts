@@ -18,7 +18,6 @@ export const UserSchema: Schema = new Schema<IUser>({
   password: {
     type: String,
     required: [true, "Password is required"],
-    lowercase: true,
     trim: true,
     minlength: [6, "Password must be at least 6 characters long"],
   },

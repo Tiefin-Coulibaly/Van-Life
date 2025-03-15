@@ -60,7 +60,7 @@ export const VanSchema: Schema = new Schema<IVan>({
       default: 0 
     },
     reviewsId: { 
-      type: [Types.ObjectId], 
+      type: [Schema.Types.ObjectId], 
       ref: "Review",
       default: []
     },
