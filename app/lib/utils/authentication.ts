@@ -27,6 +27,8 @@ export const getUserFromDb = async (
       email: userEmail.toLowerCase(),
     });
 
+    console.log(`user: ${user}`)
+
     if (!user) {
       return null;
     }

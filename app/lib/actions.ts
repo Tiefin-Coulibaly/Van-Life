@@ -52,6 +52,7 @@ export const signUserInWithCredentials = async (formData: FormData) => {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
+      rememberMe:formData.has("rememberMe") ,
       redirect: false,
     });
 

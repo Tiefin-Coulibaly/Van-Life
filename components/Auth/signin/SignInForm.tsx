@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 const SignInForm = () => {
   // State for tracking authentication errors
   const [error, setError] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   /**
@@ -77,7 +78,10 @@ const SignInForm = () => {
             <input
               id="default-checkbox"
               type="checkbox"
+              name="rememberMe"
+              checked={rememberMe}
               className="peer sr-only"
+              onChange={e => setRememberMe(e.target.checked)}
             />
             <span className="group mt-1 flex h-5 min-w-[20px] items-center justify-center rounded border-gray-300 bg-gray-100 text-blue-600 peer-checked:bg-primary dark:border-gray-600 dark:bg-gray-700">
               <svg
