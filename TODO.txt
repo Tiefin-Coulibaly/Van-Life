@@ -1,0 +1,5 @@
+- implement prisma :
+    create a schema
+    populate the database with vans database
+- refine the vans page to work with prisma as thr ORM
+- implement the auth:

@@ -7,8 +7,13 @@ import {
   GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import AuthWrapper from "@/components/Auth/AuthWrapper";
+import { useSession } from "next-auth/react";
 
 const OverviewSection = () => {
+  const { data: session, status, update } = useSession();
+
+  console.log(`Session Data: ${session}`);
+
   const overviewData = [
     {
       title: "Total Vans",
@@ -32,23 +37,24 @@ const OverviewSection = () => {
     },
   ];
   return (
-    <AuthWrapper>
-      <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-xl font-semibold text-gray-900">
-          Dashboard Overview
-        </h2>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-          {overviewData.map((data) => (
-            <Card
-              key={data.title}
-              title={data.title}
-              value={data.value}
-              icon={data.icon}
-            />
-          ))}
-        </div>
-      </section>
-    </AuthWrapper>
+    <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
+      <h2 className="mb-4 text-xl font-semibold text-gray-900">
+        Dashboard Overview
+      </h2>
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <h1>
+          Hi, {session?.user?.firstName} {session?.user?.lastName}
+        </h1>
+        {overviewData.map((data) => (
+          <Card
+            key={data.title}
+            title={data.title}
+            value={data.value}
+            icon={data.icon}
+          />
+        ))}
+      </div>
+    </section>
   );
 };
 

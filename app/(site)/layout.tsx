@@ -10,7 +10,8 @@ import "../globals.css";
 const inter = Inter({ subsets: ["latin"] });
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SessionProvider } from "next-auth/react";
+
+import Provider from "@/components/context/sessionContext";
 
 export default function RootLayout({
   children,
@@ -23,7 +24,7 @@ export default function RootLayout({
         className={`dark:bg-black ${inter.className} container mx-auto flex min-h-screen flex-col px-4 md:px-8`}
       >
         {" "}
-        <SessionProvider>
+        <Provider>
           <ThemeProvider
             enableSystem={false}
             attribute="class"
@@ -47,7 +48,7 @@ export default function RootLayout({
             <Footer />
             <ScrollToTop />
           </ThemeProvider>
-        </SessionProvider>
+        </Provider>
       </body>
     </html>
   );
