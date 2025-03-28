@@ -2,50 +2,37 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
 
-
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: "renter" | "owner" | "admin";
-  phone?: string;
-  profilePic?: string;
-  vansOwned?: Types.ObjectId[];
-  bookings?: Types.ObjectId[];
-
-
-enum Role {
-  Renter
-  Owner
-  Admin
-}
- 
+// MODELS 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  firstName          String
+  firstName     String
   lastName      String
   email         String         @unique
   emailVerified DateTime?
   image         String?
-  password: string
-  role      Role @default(Renter)
-  phone String?
-  bookings  Booking[]
+  password      String
+  role          Role           @default(Renter)
+  phone         String?
+  bookings      Booking[]
+  reviews       Review[]
+  payments      Payment[]
+  notification  Notification[]
+  vansOwned     Van[]
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("users")
 }
- 
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -59,100 +46,142 @@ model Account {
   scope             String?
   id_token          String? @db.String
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
- 
+
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
   userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String
   expires    DateTime
- 
-  @@unique([identifier, token])
-}
- 
-// Optional for WebAuthn support
-model Authenticator {
-  credentialID         String  @id @map("_id")
-  userId               String  @db.ObjectId
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  @@unique([userId, credentialID])
-}
 
+  @@unique([identifier, token])
+  @@map("sessions")
+}
 
 model Van {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  name: String?
-  price Float
-  description String
-  images String[]
-  type Type
-  available Boolean
-  bookings Booking[]
-  location: Location
-  rating Float?
-  review Review[]
-  features Features? 
-  fuelType FuelType
-  mileage Float?
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  name              String?
+  price             Float
+  description       String
+  images            String[]
+  type              Type
+  available         Boolean
+  bookings          Booking[]
+  location          Location
+  rating            Float?
+  reviews           Review[]
+  features          Features?
+  fuelType          FuelType
+  mileage           Float?
   insuranceIncluded Boolean?
-  payments Payment[]
-  owner 
+  payments          Payment[]
+  userId            String    @db.ObjectId
+  owner             User      @relation(fields: [userId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("vans")
 }
 
 model Booking {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  vanId  String  @db.ObjectId
-  van Van @relation(fields:[vanId], references:[id])
-  userId String @db.ObjectId
-  user User @relation(fields:[userId], references:[id])
-  startDate DateTime
-  endDate  DateTime
-  status BookingStatus @default(Pending)
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  vanId       String        @db.ObjectId
+  van         Van           @relation(fields: [vanId], references: [id])
+  userId      String        @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id])
+  startDate   DateTime
+  endDate     DateTime
+  status      BookingStatus @default(Pending)
   totalAmount Float
-  createdAt  DateTime @default(now())
+  payment     Payment?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("bookings")
 }
 
 model Review {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  vanId     String   @db.ObjectId
+  van       Van      @relation(fields: [vanId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  comment   String?
+  rating    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@map("reviews")
 }
 
-export interface IReview extends Document {
-  vanId:  Types.ObjectId;
-  renterId: Types.ObjectId;
-  comment?: string;
-  rating: number;
-  date: Date;
+model Payment {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId String        @unique @db.ObjectId
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  userId    String        @db.ObjectId
+  user      User          @relation(fields: [userId], references: [id])
+  vanId     String        @db.ObjectId
+  van       Van           @relation(fields: [vanId], references: [id])
+  amount    Float
+  status    PaymentStatus @default(Pending)
+  method    PaymentMethod @default(CreditCard)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
 }
 
+model Notification {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String           @db.ObjectId
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  Message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
+  @@map("notifications")
+}
 
+// ENUMS
+enum Role {
+  Renter
+  Owner
+  Admin
+}
+
+enum PaymentMethod {
+  CreditCard
+  Paypal
+}
+
+enum PaymentStatus {
+  Pending
+  Confirmed
+  Failed
+}
 
 enum BookingStatus {
   Pending
@@ -172,17 +201,27 @@ enum FuelType {
   Electric
 }
 
+//TYPES
+
+enum NotificationType {
+  Booking
+  Payment
+  Message
+  Alert
+  System
+}
+
 type Location {
-  city:     String
-  country:  String
+  city    String
+  country String
 }
 
 type Features {
-  seats: Int?;
-  sleepingCapacity: Int?;
-  hasKitchen: Boolean?;
-  hasToilet: Boolean?;
-  hasAC: Boolean?;
-  hasHeating: Boolean?;
-  petFriendly: Boolean?;
+  seats            Int?
+  sleepingCapacity Int?
+  hasKitchen       Boolean?
+  hasToilet        Boolean?
+  hasAC            Boolean?
+  hasHeating       Boolean?
+  petFriendly      Boolean?
 }
