@@ -1,12 +1,14 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { createUser } from "@/app/lib/actions";
+import { createUser } from "@/app/lib/actions/authActions";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { UserRegistration } from "@/types/userRegistrationForm";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
+import { Prisma } from "@prisma/client";
 
 /**
  * SignupForm Component
@@ -37,21 +39,16 @@ const SignupForm = (): React.ReactElement => {
    */
   const onSubmit = async (data: UserRegistration) => {
     setLoading(true);
-    const toastId = toast.loading("Creating your account...");
 
     // Call the API to create a new user
     const response: { success: boolean; message: string } =
-      await createUser(data);
-
+      await createUser(data as any);
     setLoading(false);
-    toast.dismiss(toastId); // Remove loading toast
 
     // Show success or error message based on the API response
     if (response.success) {
       toast.success(response.message);
-      setTimeout(() => {
-        router.push("/auth/signin");
-      }, 1500);
+      router.push("/auth/signin");
     } else {
       toast.error(response.message);
     }
@@ -178,8 +175,9 @@ const SignupForm = (): React.ReactElement => {
             <option className="hidden" value="">
               Select a role
             </option>
-            <option value="renter">Renter</option>
-            <option value="owner">Owner</option>
+            <option value="Renter">Renter</option>
+            <option value="Owner">Owner</option>
+            <option value="Admin">Admin</option>
           </select>
           {errors.role && (
             <p className="text-sm text-red-500">{errors.role.message}</p>
@@ -191,7 +189,11 @@ const SignupForm = (): React.ReactElement => {
       <div className="flex justify-center">
         <button
           aria-label="signup with email and password"
-          className="inline-flex items-center justify-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark"
+          className={`inline-flex items-center justify-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark ${clsx(
+            {
+              "cursor-not-allowed": loading,
+            },
+          )}`}
           disabled={loading}
         >
           {loading ? "Creating Account..." : "Create Account"}

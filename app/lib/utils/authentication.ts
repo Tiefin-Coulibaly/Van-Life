@@ -2,10 +2,10 @@ import bcrypt from "bcryptjs";
 import { UserModel } from "@/mongoose/models/userModel";
 import { IUser } from "@/types/user";
 import { runMongoConnection } from "./connectDB";
+import { prisma } from "../../../prisma/prisma";
+import { User } from "@prisma/client";
 
-// connect to db
-runMongoConnection();
-
+// hash users password
 export const saltAndHashPassword = async (
   userPassword: string,
 ): Promise<string> => {
@@ -15,6 +15,7 @@ export const saltAndHashPassword = async (
   return pwdHash;
 };
 
+// Get a user form teh db
 export const getUserFromDb = async (
   userEmail: string,
   userPassword: string,
@@ -23,25 +24,33 @@ export const getUserFromDb = async (
     console.log(`email: ${userEmail}`);
     console.log(`password: ${userPassword}`);
 
-    const user: IUser | null = await UserModel.findOne({
-      email: userEmail.toLowerCase(),
+    // try to find the user in the db
+    const user: User | null = await prisma.user.findUnique({
+      where: { email: userEmail.toLowerCase() },
     });
 
-    console.log(`user: ${user}`)
-
+    // if no user found, return  null
     if (!user) {
       return null;
     }
 
+    // verify if the user is registered
     const isUserRegistered = await bcrypt.compare(userPassword, user.password);
 
+    await prisma.$disconnect();
     return isUserRegistered ? user : null;
   } catch (error) {
     console.log(`error getting the user: ${error}`);
+    await prisma.$disconnect();
     return null;
   }
 };
 
+// find a user by its email
 export const findUserByEmail = async (userEmail: string) => {
-  return UserModel.findOne({ email: userEmail });
+  const user: User | null = await prisma.user.findUnique({
+    where: { email: userEmail.toLowerCase() },
+  });
+  await prisma.$disconnect();
+  return user;
 };

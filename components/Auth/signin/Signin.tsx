@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import SignInForm from "./SignInForm";
 import { useState } from "react";
-import { signUserInWithGoogle } from "@/app/lib/actions";
+import { signUserInWithGoogle } from "@/app/lib/actions/authActions";
 import { useRouter } from "next/navigation";
 
 const Signin = () => {

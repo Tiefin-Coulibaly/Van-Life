@@ -1,6 +1,6 @@
 /**
  * SignInForm Component
- * 
+ *
  * A form component that handles user authentication through email and password.
  * Features include:
  * - Email and password input fields
@@ -9,37 +9,45 @@
  * - Forgot password link
  * - Redirect to dashboard on successful login
  * - Sign up link for new users
- * 
+ *
  * @component
  * <SignInForm />
  */
 
 import Link from "next/link";
-import { signUserInWithCredentials } from "@/app/lib/actions";
+import { signUserInWithCredentials } from "@/app/lib/actions/authActions";
+import { toast } from "react-toastify";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
 
 const SignInForm = () => {
   // State for tracking authentication errors
+  const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   /**
    * Handles form submission for user authentication
-   * 
+   *
    * @param {FormData} formData - Form data containing email and password
    * @returns {Promise<void>}
    */
   async function handleSubmit(formData: FormData) {
     setError(null); // Clear previous errors
 
+    setIsLoading(true);
     const result = await signUserInWithCredentials(formData);
+    setIsLoading(true);
 
     // Handle authentication result
     if (result?.error) {
       setError(result.error);
     } else if (result?.success && result.redirectTo) {
+      toast.success(
+          "Successfully signed in"
+      );
       router.push(result.redirectTo);
     }
   }
@@ -81,7 +89,7 @@ const SignInForm = () => {
               name="rememberMe"
               checked={rememberMe}
               className="peer sr-only"
-              onChange={e => setRememberMe(e.target.checked)}
+              onChange={(e) => setRememberMe(e.target.checked)}
             />
             <span className="group mt-1 flex h-5 min-w-[20px] items-center justify-center rounded border-gray-300 bg-gray-100 text-blue-600 peer-checked:bg-primary dark:border-gray-600 dark:bg-gray-700">
               <svg
@@ -117,9 +125,11 @@ const SignInForm = () => {
         {/* Login Button with Arrow Icon */}
         <button
           aria-label="login with email and password"
-          className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho"
+          className={`inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho ${clsx(
+            { "cursor-not-allowed": loading }
+          )}`}
         >
-          Log in
+          {loading ? "Logging in" : "Log in"}
           <svg
             className="fill-white"
             width="14"

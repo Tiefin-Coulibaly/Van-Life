@@ -2,18 +2,20 @@
 
 import { UserRegistration } from "@/types/userRegistrationForm";
 import { UserModel } from "@/mongoose/models/userModel";
-import { saltAndHashPassword } from "./utils/authentication";
+import { saltAndHashPassword } from "../utils/authentication";
 import { signIn } from "@/auth";
-import { runMongoConnection } from "./utils/connectDB";
-
-// connect to db
-runMongoConnection();
+import { runMongoConnection } from "../utils/connectDB";
+import { prisma } from "../../../prisma/prisma";
+import { Prisma } from "@prisma/client";
 
 export const createUser = async (
-  userData: UserRegistration,
+  userData: Prisma.UserCreateInput,
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const existingUser = await UserModel.findOne({ email: userData.email });
+    // verify is the user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: userData.email },
+    });
 
     if (existingUser) {
       return {
@@ -34,8 +36,10 @@ export const createUser = async (
     // Explicitly hash password before saving
     userData.password = await saltAndHashPassword(userData.password);
 
-    const newUser = new UserModel(userData);
-    await newUser.save(); // Ensure save is awaited
+    // Create a new user
+    await prisma.user.create({
+      data: userData,
+    });
 
     return { success: true, message: "User created successfully!" };
   } catch (error) {
@@ -52,7 +56,7 @@ export const signUserInWithCredentials = async (formData: FormData) => {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      rememberMe:formData.has("rememberMe") ,
+      rememberMe: formData.has("rememberMe"),
       redirect: false,
     });
 
@@ -70,8 +74,8 @@ export const signUserInWithCredentials = async (formData: FormData) => {
   }
 };
 
-export const signUserInWithGoogle = async () => {
-  await signIn("google", {
-    redirectTo: "/dashboard",
-  });
-};
+// export const signUserInWithGoogle = async () => {
+//   await signIn("google", {
+//     redirectTo: "/dashboard",
+//   });
+// };
