@@ -13,7 +13,7 @@ export const fetchAllVans = async (): Promise<
 > => {
   try {
     const vans: (IVan & { _id: Types.ObjectId })[] = await VanModel.find();
-    console.log(vans);
+    console.dir(vans, {depth:Infinity});
     return vans;
   } catch (error) {
     console.log(`Failed to fetch all vans: ${error}`);
