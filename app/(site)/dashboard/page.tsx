@@ -1,18 +1,17 @@
-"use client";
-
 import Card from "@/components/dashboard/Card";
 import {
   TruckIcon,
   CurrencyDollarIcon,
   GlobeAltIcon,
 } from "@heroicons/react/24/outline";
-import AuthWrapper from "@/components/Auth/AuthWrapper";
-import { useSession } from "next-auth/react";
+import { auth } from "@/auth";
 
-const OverviewSection = () => {
-  const { data: session, status, update } = useSession();
-
-  console.log(`Session Data: ${session}`);
+const OverviewSection = async () => {
+  
+  const session = await auth();
+  
+  console.log(`Session Data:`);
+  console.dir(session, {depth:null});
 
   const overviewData = [
     {

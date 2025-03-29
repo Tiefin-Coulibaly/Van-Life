@@ -43,6 +43,7 @@ const SignInForm = () => {
 
     // Handle authentication result
     if (result?.error) {
+      setIsLoading(false)
       setError(result.error);
     } else if (result?.success && result.redirectTo) {
       toast.success(

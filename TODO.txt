@@ -1,3 +1,2 @@
--add sign up with google oauth: will need to handle additional information after account creation
-- handle oauth login
+- handle why sign in with credentials return a null session
 - protect routes

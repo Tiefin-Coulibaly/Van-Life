@@ -9,6 +9,7 @@ import { prisma } from "../../../prisma/prisma";
 import { Prisma } from "@prisma/client";
 import { IGoogleNewUser } from "@/types/googleNewUser";
 
+
 export const createUser = async (
   userData: Prisma.UserCreateInput,
 ): Promise<{ success: boolean; message: string }> => {
@@ -67,7 +68,10 @@ export const signUserInWithCredentials = async (formData: FormData) => {
     console.error("Credentials Authentication error:", error.type);
     // console.log(error.Error)
     return error.type === "CredentialsSignin"
-      ? { error: "Invalid Credentials. Please try again." }
+      ? {
+          error:
+            "Invalid credentials. Please try again. If you signed up with your Google account, sign in using Google. You can set up email and password login later in your account settings.",
+        }
       : {
           error:
             "An unexpected error occurred. We are currently working on it. Please try again later",
@@ -91,5 +95,5 @@ export const updateGoogleAuthNewUserData = async (
     data: userData,
   });
 
-  await prisma.$disconnect()
+  await prisma.$disconnect();
 };

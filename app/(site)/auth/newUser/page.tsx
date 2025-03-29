@@ -47,7 +47,7 @@ const page = () => {
     <div className="flex flex-1 flex-col items-center justify-center">
       {/* Form Heading */}
       <h2 className="mb-15 text-center text-3xl font-semibold text-black dark:text-white xl:text-sectiontitle2">
-        Additional Information
+        Additional information for new users
       </h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Phone & Role Selection */}

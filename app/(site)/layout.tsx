@@ -24,31 +24,29 @@ export default function RootLayout({
         className={`dark:bg-black ${inter.className} container mx-auto flex min-h-screen flex-col px-4 md:px-8`}
       >
         {" "}
-        <Provider>
-          <ThemeProvider
-            enableSystem={false}
-            attribute="class"
-            defaultTheme="light"
-          >
-            <Lines />
-            <Header />
-            {children}
-            <ToastContainer
-              position="top-right"
-              autoClose={1500}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-            />
-            <Footer />
-            <ScrollToTop />
-          </ThemeProvider>
-        </Provider>
+        <ThemeProvider
+          enableSystem={false}
+          attribute="class"
+          defaultTheme="light"
+        >
+          <Lines />
+          <Header />
+          {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={1500}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+          <Footer />
+          <ScrollToTop />
+        </ThemeProvider>
       </body>
     </html>
   );
