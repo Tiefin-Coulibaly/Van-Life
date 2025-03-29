@@ -8,7 +8,7 @@ import { UserRegistration } from "@/types/userRegistrationForm";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
-import { Prisma } from "@prisma/client";
+
 
 /**
  * SignupForm Component

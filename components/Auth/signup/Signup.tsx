@@ -1,8 +1,9 @@
-"use client"; // Ensures this component runs only on the client side
-import { motion } from "framer-motion"; // Import animation library for smooth transitions
-import Image from "next/image"; // Optimized image handling in Next.js
-import GoogleAndGithubSignup from "./GoogleAndGithubSignup"; // Component for third-party authentication
-import SignupForm from "./SignupForm"; // Component for the email/password sign-up form
+"use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import GoogleAndGithubSignup from "./GoogleAndGithubSignup";
+import SignupForm from "./SignupForm";
+import GoogleSignIn from "../signin/GoogleSignIn";
 
 /**
  * Signup Component
@@ -52,17 +53,17 @@ const Signup = () => {
               Create an Account
             </h2>
 
-            {/* Third-Party Authentication Options (Google & GitHub) */}
-            {/* <GoogleAndGithubSignup /> */}
+            {/* Google Third-Party Authentication  */}
+            <GoogleSignIn />
 
             {/* OR Divider */}
-            {/* <div className="mb-10 flex items-center justify-center">
+            <div className="mb-10 flex items-center justify-center">
               <span className="dark:bg-stroke-dark hidden h-[1px] w-full max-w-[200px] bg-stroke dark:bg-strokedark sm:block"></span>
               <p className="text-body-color dark:text-body-color-dark w-full px-5 text-center text-base">
                 Or, register with your email
               </p>
               <span className="dark:bg-stroke-dark hidden h-[1px] w-full max-w-[200px] bg-stroke dark:bg-strokedark sm:block"></span>
-            </div> */}
+            </div>
 
             {/* Email/Password Signup Form */}
             <SignupForm />

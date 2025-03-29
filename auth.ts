@@ -45,9 +45,36 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
     }),
+    Google,
   ],
-  session:{
-    strategy:"database",
+  // callbacks: {
+  //   async signIn({ user, account }) {
+  //     // allow sign in when using the credentials provider
+  //     if (account?.provider === "credentials") {
+  //       return true;
+  //     }
+
+  //     // verify the existence of the user in the db before
+  //     // allowing him to sign in when the provider is google
+  //     if (account?.provider === "google") {
+  //       const foundUser = findUserByEmail(user?.email as string);
+  //       console.log("Found user", foundUser);
+  //       if (!foundUser) {
+  //         return false;
+  //       }
+  //       return true;
+  //     }
+
+  //     // Catch-all fallback for other providers
+  //     return false;
+  //   },
+  // },
+  session: {
+    strategy: "database",
     maxAge: 60 * 60 * 24 * 14, // 14 days
+  },
+  pages:{
+    signIn:"/auth/signin",
+    newUser:"/auth/newUser"
   }
 });

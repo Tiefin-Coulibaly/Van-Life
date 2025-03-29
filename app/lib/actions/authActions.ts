@@ -7,6 +7,7 @@ import { signIn } from "@/auth";
 import { runMongoConnection } from "../utils/connectDB";
 import { prisma } from "../../../prisma/prisma";
 import { Prisma } from "@prisma/client";
+import { IGoogleNewUser } from "@/types/googleNewUser";
 
 export const createUser = async (
   userData: Prisma.UserCreateInput,
@@ -74,8 +75,21 @@ export const signUserInWithCredentials = async (formData: FormData) => {
   }
 };
 
-// export const signUserInWithGoogle = async () => {
-//   await signIn("google", {
-//     redirectTo: "/dashboard",
-//   });
-// };
+export const signUserInWithGoogle = async () => {
+  await signIn("google", {
+    redirectTo: "/dashboard",
+  });
+};
+
+// Update the user information after signin up with google
+export const updateGoogleAuthNewUserData = async (
+  userEmail: string,
+  userData: IGoogleNewUser,
+) => {
+  await prisma.user.update({
+    where: { email: userEmail },
+    data: userData,
+  });
+
+  await prisma.$disconnect()
+};

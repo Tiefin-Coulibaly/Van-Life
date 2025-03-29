@@ -1,5 +1,3 @@
-- implement prisma :
-    create a schema
-    populate the database with vans database
-- refine the vans page to work with prisma as thr ORM
-- implement the auth:
+-add sign up with google oauth: will need to handle additional information after account creation
+- handle oauth login
+- protect routes
