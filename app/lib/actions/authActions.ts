@@ -1,15 +1,14 @@
 "use server";
 
-import { UserRegistration } from "@/types/userRegistrationForm";
-import { UserModel } from "@/mongoose/models/userModel";
-import { saltAndHashPassword } from "../utils/authentication";
-import { signIn } from "@/auth";
-import { runMongoConnection } from "../utils/connectDB";
+
+import { signIn, signOut } from "@/auth";
 import { prisma } from "../../../prisma/prisma";
 import { Prisma } from "@prisma/client";
 import { IGoogleNewUser } from "@/types/googleNewUser";
+import bcrypt from "bcryptjs";
+import { User } from "@prisma/client";
 
-
+// Create  a new user
 export const createUser = async (
   userData: Prisma.UserCreateInput,
 ): Promise<{ success: boolean; message: string }> => {
@@ -28,15 +27,20 @@ export const createUser = async (
 
     // Format fields properly
     userData.email = userData.email.toLowerCase();
-    userData.firstName =
-      userData.firstName.charAt(0).toUpperCase() +
-      userData.firstName.slice(1).toLowerCase();
-    userData.lastName =
-      userData.lastName.charAt(0).toUpperCase() +
-      userData.lastName.slice(1).toLowerCase();
+    if (userData.firstName) {
+      userData.firstName =
+        userData.firstName.charAt(0).toUpperCase() +
+        userData.firstName.slice(1).toLowerCase();
+    }
+
+    if (userData.lastName) {
+      userData.lastName =
+        userData.lastName.charAt(0).toUpperCase() +
+        userData.lastName.slice(1).toLowerCase();
+    }
 
     // Explicitly hash password before saving
-    userData.password = await saltAndHashPassword(userData.password);
+    userData.password = await saltAndHashPassword(userData?.password as string);
 
     // Create a new user
     await prisma.user.create({
@@ -53,12 +57,66 @@ export const createUser = async (
   }
 };
 
+// hash users password
+export const saltAndHashPassword = async (
+  userPassword: string,
+): Promise<string> => {
+  console.log("Original Password:", userPassword);
+  const pwdHash = await bcrypt.hash(userPassword, 10);
+  console.log("Hashed Password:", pwdHash);
+  return pwdHash;
+};
+
+// Get a user form the db
+export const getUserFromDb = async (
+  userEmail: string,
+  userPassword: string,
+) => {
+  try {
+    console.log(`email: ${userEmail}`);
+    console.log(`password: ${userPassword}`);
+
+    // try to find the user in the db
+    const user: User | null = await prisma.user.findUnique({
+      where: { email: userEmail.toLowerCase() },
+    });
+
+    // if no user found, return  null
+    if (!user) {
+      return null;
+    }
+
+    // verify if the user is registered
+    const isUserRegistered = await bcrypt.compare(userPassword, user?.password as string);
+
+    await prisma.$disconnect();
+    return isUserRegistered ? user : null;
+  } catch (error) {
+    console.log(`error getting the user: ${error}`);
+    await prisma.$disconnect();
+    return null;
+  }
+};
+
+// find a user by its email
+export const findUserByEmail = async (userEmail: string):  Promise<User | { success: false; message: string }> => {
+  const user: User | null = await prisma.user.findUnique({
+    where: { email: userEmail.toLowerCase() },
+  });
+
+  if (!user) {
+    return {success:false, message:"No user found. Please enter a valid email."}
+  }
+  await prisma.$disconnect();
+  return user;
+};
+
+// Handle user sign in with credentials
 export const signUserInWithCredentials = async (formData: FormData) => {
   try {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      rememberMe: formData.has("rememberMe"),
       redirect: false,
     });
 
@@ -79,6 +137,7 @@ export const signUserInWithCredentials = async (formData: FormData) => {
   }
 };
 
+// handle user sign in with google
 export const signUserInWithGoogle = async () => {
   await signIn("google", {
     redirectTo: "/dashboard",
@@ -96,4 +155,9 @@ export const updateGoogleAuthNewUserData = async (
   });
 
   await prisma.$disconnect();
+};
+
+// Handle user sign out
+export const signUserOUt = async () => {
+  await signOut({redirectTo:"/auth/signin"});
 };

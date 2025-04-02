@@ -1,9 +1,17 @@
-import Profile from "@/components/dashboard/profile/Profile"
+import Profile from "@/components/dashboard/profile/Profile";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-const page = () => {
-  return (
-    <Profile/>
-  )
-}
+const page = async () => {
+  // get the session
+  const session = await auth();
 
-export default page
+  // protect the route by redirecting the user to the
+  // log in page
+  if (!session || !session.user) {
+    redirect("/auth/signin?callbackUrl=/profile");
+  }
+  return <Profile />;
+};
+
+export default page;

@@ -1,2 +1,4 @@
-- handle why sign in with credentials return a null session
-- protect routes
+- handle the password reset 
+- handle not linked accounts and provide error messages accordingly
+- implement session caching 
+

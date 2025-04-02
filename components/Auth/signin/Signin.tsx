@@ -3,8 +3,12 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import SignInForm from "./SignInForm";
 import GoogleSignIn from "./GoogleSignIn";
+import { useSearchParams } from "next/navigation";
 
 const Signin = () => {
+  const params = useSearchParams()
+  const callbackUrl = params.get("callbackUrl")
+
   return (
     <>
       {/* <!-- ===== SignIn Form Start ===== --> */}
@@ -56,7 +60,7 @@ const Signin = () => {
               </p>
               <span className="dark:bg-stroke-dark hidden h-[1px] w-full max-w-[200px] bg-stroke dark:bg-strokedark sm:block"></span>
             </div>
-            <SignInForm />
+            <SignInForm callbackUrl={callbackUrl}/>
           </motion.div>
         </div>
       </section>
