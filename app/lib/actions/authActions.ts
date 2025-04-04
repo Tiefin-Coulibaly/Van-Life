@@ -102,7 +102,7 @@ export const getUserFromDb = async (
 export const findUserByEmail = async (userEmail: string):  Promise<User | { success: false; message: string }> => {
   const user: User | null = await prisma.user.findUnique({
     where: { email: userEmail.toLowerCase() },
-  });
+  }); 
 
   if (!user) {
     return {success:false, message:"No user found. Please enter a valid email."}

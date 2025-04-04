@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 
 const EmailVerification = () => {
   const [loading, setIsLoading] = useState<boolean>(false);
+
   const [error, setError] = useState<string>("");
   const router = useRouter();
 
@@ -19,14 +20,12 @@ const EmailVerification = () => {
 
     const email = formData.get("email"); // get the email
 
-    // if no email, stop teh function
+    // if no email, stop the function
     if (!email) {
       setError("Please provide your email.");
       setIsLoading(false);
       return;
     }
-
-    let userFromDb: User;
 
     // get the user
     findUserByEmail(email as string)
@@ -37,11 +36,12 @@ const EmailVerification = () => {
           return;
         }
 
-        // save the user in the userFromDb variable
-        userFromDb = result as User;
-        router.push("/auth/passwordReset/");
-
-        console.log(userFromDb);
+        // redirect the user to the password reset page
+        // pass the email as a query parameter 
+        router.push(
+          `/auth/passwordReset?email=${(email as string).toLowerCase()}`,
+        );
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(`Error on the reset password page: ${error}`);
@@ -72,15 +72,9 @@ const EmailVerification = () => {
 
           <motion.div
             variants={{
-              hidden: {
-                opacity: 0,
-                y: -20,
-              },
+              hidden: { opacity: 0, y: -20 },
 
-              visible: {
-                opacity: 1,
-                y: 0,
-              },
+              visible: { opacity: 1, y: 0 },
             }}
             initial="hidden"
             whileInView="visible"
@@ -92,14 +86,19 @@ const EmailVerification = () => {
               Provide your email
             </h2>
 
-            <form action={handleSubmit}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(new FormData(e.currentTarget));
+              }}
+            >
               {/* Email and Password Input Fields */}
               <div className="mb-7.5 flex  lg:mb-12.5">
                 <input
                   type="text"
                   placeholder="Email"
                   name="email"
-                  className="w-full border-b border-stroke !bg-white pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:!bg-black dark:focus:border-manatee dark:focus:placeholder:text-white"
+                  className="w-full  border-b border-stroke !bg-white py-2 pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:!bg-black dark:focus:border-manatee dark:focus:placeholder:text-white"
                 />
               </div>
 
@@ -113,25 +112,35 @@ const EmailVerification = () => {
               <div className="flex flex-wrap items-center justify-center gap-10 md:justify-end xl:gap-15">
                 {/* Next button*/}
                 <button
+                  type="submit"
                   aria-label="login with email and password"
                   className={`mb-6 inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho ${clsx(
                     { "cursor-not-allowed": loading },
                   )}`}
                 >
-                  Next
-                  <svg
-                    className="fill-white"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.4767 6.16664L6.00668 1.69664L7.18501 0.518311L13.6667 6.99998L7.18501 13.4816L6.00668 12.3033L10.4767 7.83331H0.333344V6.16664H10.4767Z"
-                      fill=""
-                    />
-                  </svg>
+                  {!loading ? (
+                    <div className="flex items-center gap-3">
+                      Next
+                      <svg
+                        className="fill-white"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10.4767 6.16664L6.00668 1.69664L7.18501 0.518311L13.6667 6.99998L7.18501 13.4816L6.00668 12.3033L10.4767 7.83331H0.333344V6.16664H10.4767Z"
+                          fill=""
+                        />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      Verifying email{" "}
+                      <div className="size-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                    </div>
+                  )}
                 </button>
               </div>
             </form>
