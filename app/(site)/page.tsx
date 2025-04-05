@@ -7,6 +7,7 @@ import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Testimonial from "@/components/Testimonial";
 
+
 export const metadata: Metadata = {
   title: "Next.js Starter Template for SaaS Startups - Solid SaaS Boilerplate",
 

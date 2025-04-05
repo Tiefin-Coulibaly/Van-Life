@@ -1,18 +1,11 @@
-import { connect, Types } from "mongoose";
+import { Types } from "mongoose";
 import { VanModel } from "@/mongoose/models/vanModel";
 import { IVan } from "@/types/van";
 import { ISearchParams } from "@/types/searchParams";
+import { runMongoConnection } from "../utils/connectDB";
 
-async function runMongoConnection() {
-  try {
-    const mongoConnection = await connect(process.env.MONGO_URI!);
-    console.log("✅ Successfully connected to MongoDB");
-  } catch (error) {
-    console.error("❌ Connection to MongoDB failed:", error);
-  }
-}
 
-// Run the connection
+// connect to the db
 runMongoConnection();
 
 export const fetchAllVans = async (): Promise<
@@ -20,7 +13,7 @@ export const fetchAllVans = async (): Promise<
 > => {
   try {
     const vans: (IVan & { _id: Types.ObjectId })[] = await VanModel.find();
-    console.log(vans);
+    console.dir(vans, {depth:Infinity});
     return vans;
   } catch (error) {
     console.log(`Failed to fetch all vans: ${error}`);

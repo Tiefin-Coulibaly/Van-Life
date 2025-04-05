@@ -30,7 +30,7 @@ export const links: { name: string; href: string; icon: React.ReactElement }[] =
     },
     {
       name: "Vans",
-      href: "/dashboard/uservans",
+      href: "/dashboard/vans",
       icon: <TruckIcon className="w-6" />,
     },
     {

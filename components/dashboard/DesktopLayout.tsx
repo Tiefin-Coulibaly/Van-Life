@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { links } from "./NavLinks";
-import { PowerIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import SignOutBtn from "./SignOutBtn";
