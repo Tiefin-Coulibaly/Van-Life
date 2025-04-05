@@ -18,10 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: adapter,
   providers: [
     Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
+      credentials: { email: {}, password: {} },
       authorize: async (credentials) => {
         try {
           // validate user input with zod
@@ -127,5 +124,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/auth/signin",
     newUser: "/auth/newUser",
+    error: "/auth/error",
   },
+
+ 
 });

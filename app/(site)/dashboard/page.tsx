@@ -18,9 +18,6 @@ const OverviewSection = async () => {
     redirect("/auth/signin")
   }
 
-  
-  console.log(`Session Data:`);
-  console.dir(session, {depth:null});
 
   const overviewData = [
     {

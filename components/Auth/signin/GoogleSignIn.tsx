@@ -1,6 +1,7 @@
 import { signUserInWithGoogle } from "@/app/lib/actions/authActions";
 
 const GoogleSignIn = () => {
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-8">

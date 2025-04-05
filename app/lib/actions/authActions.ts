@@ -1,12 +1,13 @@
 "use server";
 
-
 import { signIn, signOut } from "@/auth";
 import { prisma } from "../../../prisma/prisma";
 import { Prisma } from "@prisma/client";
 import { IGoogleNewUser } from "@/types/googleNewUser";
 import bcrypt from "bcryptjs";
 import { User } from "@prisma/client";
+import { ISignIn } from "@/types/signIn";
+import { redirect } from "next/navigation";
 
 // Create  a new user
 export const createUser = async (
@@ -43,9 +44,7 @@ export const createUser = async (
     userData.password = await saltAndHashPassword(userData?.password as string);
 
     // Create a new user
-    await prisma.user.create({
-      data: userData,
-    });
+    await prisma.user.create({ data: userData });
 
     return { success: true, message: "User created successfully!" };
   } catch (error) {
@@ -87,7 +86,10 @@ export const getUserFromDb = async (
     }
 
     // verify if the user is registered
-    const isUserRegistered = await bcrypt.compare(userPassword, user?.password as string);
+    const isUserRegistered = await bcrypt.compare(
+      userPassword,
+      user?.password as string,
+    );
 
     await prisma.$disconnect();
     return isUserRegistered ? user : null;
@@ -99,24 +101,29 @@ export const getUserFromDb = async (
 };
 
 // find a user by its email
-export const findUserByEmail = async (userEmail: string):  Promise<User | { success: false; message: string }> => {
+export const findUserByEmail = async (
+  userEmail: string,
+): Promise<User | { success: false; message: string }> => {
   const user: User | null = await prisma.user.findUnique({
     where: { email: userEmail.toLowerCase() },
-  }); 
+  });
 
   if (!user) {
-    return {success:false, message:"No user found. Please enter a valid email."}
+    return {
+      success: false,
+      message: "No user found. Please enter a valid email.",
+    };
   }
   await prisma.$disconnect();
   return user;
 };
 
 // Handle user sign in with credentials
-export const signUserInWithCredentials = async (formData: FormData) => {
+export const signUserInWithCredentials = async (formData: ISignIn) => {
   try {
     await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email: formData.email,
+      password: formData.password,
       redirect: false,
     });
 
@@ -139,9 +146,7 @@ export const signUserInWithCredentials = async (formData: FormData) => {
 
 // handle user sign in with google
 export const signUserInWithGoogle = async () => {
-  await signIn("google", {
-    redirectTo: "/dashboard",
-  });
+  await signIn("google", { redirectTo: "/dashboard" });
 };
 
 // Update the user information after signin up with google
@@ -149,15 +154,12 @@ export const updateGoogleAuthNewUserData = async (
   userEmail: string,
   userData: IGoogleNewUser,
 ) => {
-  await prisma.user.update({
-    where: { email: userEmail },
-    data: userData,
-  });
+  await prisma.user.update({ where: { email: userEmail }, data: userData });
 
   await prisma.$disconnect();
 };
 
 // Handle user sign out
 export const signUserOUt = async () => {
-  await signOut({redirectTo:"/auth/signin"});
+  await signOut({ redirectTo: "/auth/signin" });
 };
