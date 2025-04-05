@@ -1,3 +1,5 @@
+- Desactivate the save Changes btn if not data inserted
+- update user profile info
 - handle dashboard info
 - handle not linked accounts and provide error messages accordingly
 - implement session caching 
