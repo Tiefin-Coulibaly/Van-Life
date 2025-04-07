@@ -11,7 +11,7 @@ export const signInSchema = object({
 });
 
 export const profileUpdateSchema = object({
-  fullName: string().optional(),
+  name: string().optional(),
   email: string().optional().refine(
     val => !val || val.includes('@'), // Only validate if value exists
     { message: "Invalid email" }

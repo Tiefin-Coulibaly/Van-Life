@@ -1,5 +1,5 @@
 export interface IUpdateProfile{
-    fullName?:string
+    name?:string
     email?: string
     newPassword?:string
 }
