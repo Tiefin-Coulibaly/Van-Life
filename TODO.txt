@@ -1,4 +1,6 @@
-
+- Clear the error when the user select a new image
+- fix the skewed image on the user profile page
+- add a link to bring the user to the image upload page
 - update user profile photo
 - handle dashboard info
 - handle not linked accounts and provide error messages accordingly

@@ -3,6 +3,8 @@
 import DesktopLayout from "@/components/dashboard/DesktopLayout";
 import MobileAndTabletLayout from "@/components/dashboard/MobileAndTabletLayout";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -14,7 +16,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <DesktopLayout />
 
         {/* Main Content */}
-        <main className="mt-2 flex-1 md:mt-4 lg:mt-2 lg:p-6 ">{children}</main>
+        <main className="mt-2 flex-1 md:mt-4 lg:mt-2 lg:p-6 ">
+          <ToastContainer />
+          {children}
+        </main>
       </div>
     </SessionProvider>
   );
