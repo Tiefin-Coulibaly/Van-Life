@@ -6,8 +6,11 @@ import { FaCloudUploadAlt, FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { FileRejection } from "react-dropzone";
-import { uploadImageToCloudFare, updateUserImageInDb } from "@/app/lib/actions/profileUpdateAction";
-import {toast} from "react-toastify";
+import {
+  uploadImageToCloudFare,
+  updateUserImageInDb,
+} from "@/app/lib/actions/profileUpdateAction";
+import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
 const ImageDropzone = () => {
@@ -16,6 +19,7 @@ const ImageDropzone = () => {
   const [uploadImage, setUploadImage] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const session = useSession();
+
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -72,13 +76,14 @@ const ImageDropzone = () => {
 
         const imageUrl = await uploadImageToCloudFare(imageData);
         await updateUserImageInDb(userId!, imageUrl);
-      
+
         await session.update({
           ...session.data,
-          user:{
+          user: {
             ...session.data?.user,
             image: imageUrl,
-          }})
+          },
+        });
 
         toast.success("Image uploaded successfully!");
 
@@ -136,7 +141,7 @@ const ImageDropzone = () => {
         ) : (
           <>
             <FaCloudUploadAlt className="mb-4 text-5xl text-gray-500" />
-            <p className="text-center text-sm text-gray-700">
+            <div className="text-center text-sm text-gray-700">
               {isDragActive ? (
                 <p>Drop the image here ...</p>
               ) : (
@@ -152,11 +157,11 @@ const ImageDropzone = () => {
                   </p>
                 </>
               )}
-            </p>
+            </div>
           </>
         )}
 
-        {uploadError && (
+        {uploadError && !uploadImage && (
           <p className="mt-2 text-sm text-red-500">{uploadError}</p>
         )}
       </div>

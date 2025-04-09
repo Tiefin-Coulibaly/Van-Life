@@ -49,7 +49,7 @@ const MobileAndTabletLayout = (): React.ReactElement => {
                   alt="user's image"
                   src={session.user.image}
                   fill
-                  className="rounded-full"
+                  className="rounded-full object-cover shadow-md"
                 />
               </div>
             ) : (

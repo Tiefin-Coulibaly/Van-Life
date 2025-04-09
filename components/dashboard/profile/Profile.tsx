@@ -13,6 +13,7 @@ import { IUpdateProfile } from "@/types/profileUpdate";
 import { profileUpdateSchema } from "@/app/lib/utils/zod";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import Link from "next/link";
 
 
 const Profile = () => {
@@ -77,16 +78,15 @@ const Profile = () => {
                 alt="User's image"
                 src={session?.user?.image}
                 fill
-                className="rounded-full"
+                className="rounded-full object-cover shadow-md"
               />
             </div>
           ) : (
             <div className="size-24 rounded-full border border-gray-300 object-cover" />
           )}
-          <label className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-black p-1.5 text-white">
+          <Link href="/dashboard/profile/imageUpload" className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-black p-1.5 text-white">
             <FaCamera className="text-sm text-white" />
-            <input type="file" className="hidden" />
-          </label>
+          </Link>
         </div>
 
         {/* User Info Display */}

@@ -1,12 +1,15 @@
-"use client";
+import ImageDropzone from "@/components/dashboard/profile/ImageDropzone";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-import React from 'react'
-import ImageDropzone from '@/components/dashboard/profile/ImageDropzone'
+const ImageUpload = async () => {
+  const session = await auth();
 
-const ImageUpload = () => {
-  return (
-    <ImageDropzone/>
-  )
-}
+  if (!session || !session.user) {
+    redirect("/auth/signin");
+  }
 
-export default ImageUpload
+  return <ImageDropzone />;
+};
+
+export default ImageUpload;
