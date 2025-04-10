@@ -14,7 +14,7 @@ import { profileUpdateSchema } from "@/app/lib/utils/zod";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
-
+import LinkedAccounts from "./LinkedAccounts";
 
 const Profile = () => {
   const [isFormEmpty, setIsFormEmpty] = useState<boolean>(true);
@@ -32,7 +32,7 @@ const Profile = () => {
     handleSubmit,
     watch,
     formState: { errors },
-    reset
+    reset,
   } = useForm<IUpdateProfile>({ resolver: zodResolver(profileUpdateSchema) });
 
   const watchedValues = watch();
@@ -58,7 +58,7 @@ const Profile = () => {
       },
     });
 
-    reset()
+    reset();
     setIsUserDataUpdating(false);
   };
 
@@ -84,7 +84,10 @@ const Profile = () => {
           ) : (
             <div className="size-24 rounded-full border border-gray-300 object-cover" />
           )}
-          <Link href="/dashboard/profile/imageUpload" className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-black p-1.5 text-white">
+          <Link
+            href="/dashboard/profile/imageUpload"
+            className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-black p-1.5 text-white"
+          >
             <FaCamera className="text-sm text-white" />
           </Link>
         </div>
@@ -194,6 +197,11 @@ const Profile = () => {
           </button>
         </div>
       </form>
+
+      {/* Linked Accounts Section */}
+      <div className="mt-8 border-t pt-6">
+        <LinkedAccounts />
+      </div>
     </section>
   );
 };

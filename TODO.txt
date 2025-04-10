@@ -1,3 +1,9 @@
+- linkAccount (providerId, providerAccountId, userId)
+    - check if account exist 
+    - verify if the account is related the current user
+    - create the account 
+
+
 
 - handle dashboard info
 - handle not linked accounts and provide error messages accordingly

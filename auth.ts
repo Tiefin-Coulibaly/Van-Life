@@ -52,12 +52,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
     }),
-    Google,
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+    }),
   ],
   callbacks: {
-    // verify if the user is using the credentials provider
     async jwt({ token, account, user }) {
-      // extend the token object if the provider is credentials
       if (user && account?.provider === "credentials") {
         token.credentials = true;
         token.sub = user.id;
@@ -67,12 +68,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     // define the session object
-    async session({ session, user }) {
+    async session({ session, user, token }) {
+      if (!token) {
+        return session;
+      }
+
+      try {
+        // Find the account that was just created
+        const newAccount = await prisma.account.findFirst({
+          where: {
+            userId: token.sub,
+            provider: "google",
+          },
+          orderBy: { createdAt: "desc" },
+        });
+
+        if (newAccount) {
+          await prisma.account.update({
+            where: { id: newAccount.id },
+            data: { userId: token.sub },
+          });
+
+          console.log(`Account linked to user ${token.linkUserId}`);
+        }
+      } catch (error) {
+        console.error("Error linking account in session callback:", error);
+      }
+
       if (user) {
         return {
           ...session,
           user: {
             ...session.user,
+            id: token.sub || user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             role: user.role,
@@ -88,7 +116,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   jwt: {
     encode: async (params) => {
       if (params.token?.credentials) {
-        const sessionToken = uuidv4(); // create a unique session ID
+        const sessionToken = uuidv4();
 
         // Throw an error if no user ID
         if (!params.token?.sub) {
@@ -126,6 +154,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     newUser: "/auth/newUser",
     error: "/auth/error",
   },
-
- 
 });
