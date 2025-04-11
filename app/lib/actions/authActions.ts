@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import { User } from "@prisma/client";
 import { ISignIn } from "@/types/signIn";
 import { redirect } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 // Create  a new user
 export const createUser = async (
@@ -44,7 +45,17 @@ export const createUser = async (
     userData.password = await saltAndHashPassword(userData?.password as string);
 
     // Create a new user
-    await prisma.user.create({ data: userData });
+    const newUser = await prisma.user.create({ data: userData });
+
+    // Create an account record for this user
+    await prisma.account.create({
+      data: {
+        userId: newUser.id,
+        type: "credentials",
+        provider: "credentials",
+        providerAccountId: uuidv4(), 
+      },
+    });
 
     return { success: true, message: "User created successfully!" };
   } catch (error) {

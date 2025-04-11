@@ -1,5 +1,3 @@
-- handle dashboard info
-- handle not linked accounts and provide error messages accordingly
 - implement session caching 
 - populate the db
 - add prisma to fetch the vans

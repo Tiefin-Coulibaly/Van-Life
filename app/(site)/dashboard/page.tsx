@@ -9,15 +9,11 @@ import { redirect } from "next/navigation";
 
 const OverviewSection = async () => {
   
-  // get the session
   const session = await auth();
 
-  // protect the route by redirecting the user to the 
-  // log in page
   if (!session || !session.user) {
     redirect("/auth/signin")
   }
-
 
   const overviewData = [
     {
@@ -43,13 +39,11 @@ const OverviewSection = async () => {
   ];
   return (
     <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
-      <h2 className="mb-4 text-xl font-semibold text-gray-900">
-        Dashboard Overview
-      </h2>
+      <h1 className="mb-8 text-3xl font-semibold text-gray-900">
+        Hi, {session.user.name || `${session.user.firstName} ${session.user.lastName}`}
+      </h1>
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        <h1>
-          Hi, {session?.user?.firstName} {session?.user?.lastName}
-        </h1>
+        
         {overviewData.map((data) => (
           <Card
             key={data.title}

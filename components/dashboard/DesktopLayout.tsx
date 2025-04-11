@@ -4,6 +4,8 @@ import { links } from "./NavLinks";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import SignOutBtn from "./SignOutBtn";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 /**
  * DesktopLayout Component
@@ -20,6 +22,9 @@ import SignOutBtn from "./SignOutBtn";
  */
 const DesktopLayout = (): React.ReactElement => {
   const pathName = usePathname();
+
+  const { data: session } = useSession();
+
 
   return (
     <aside
@@ -44,12 +49,24 @@ const DesktopLayout = (): React.ReactElement => {
               },
             )}
           >
-            {link.icon} {link.name}
+            {link.name === "Profile" && session?.user.image ? (
+              <div className="relative size-8">
+                <Image
+                  alt="user's image"
+                  src={session.user.image}
+                  fill
+                  className="rounded-full object-cover shadow-md"
+                />
+              </div>
+            ) : (
+              link.icon
+            )}{" "}
+            {link.name}
           </Link>
         ))}
 
         {/* Sign Out Button */}
-        <SignOutBtn text="Sign Out" className="!w-full"/>
+        <SignOutBtn text="Sign Out" className="!w-full" />
       </nav>
     </aside>
   );
