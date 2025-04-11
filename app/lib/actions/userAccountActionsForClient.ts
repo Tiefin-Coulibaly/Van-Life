@@ -1,6 +1,6 @@
 "use server";
 
-import { getLinkedProviders, unlinkAccount } from "./userAccountsManagement";
+import { getLinkedProviders, unlinkAccount } from "./userAccountsActions";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma/prisma";
 import { saltAndHashPassword } from "./authActions";

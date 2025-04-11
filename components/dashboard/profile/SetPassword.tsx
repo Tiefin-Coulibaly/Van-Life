@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordSchema } from "@/app/lib/utils/zod";
-import { setPasswordForUser } from "@/app/lib/actions/userAccountActions";
+import { setPasswordForUser } from "@/app/lib/actions/userAccountActionsForClient";
 import { SetPasswordFormValues } from "@/types/setPassword";
 
 export default function SetPassword() {

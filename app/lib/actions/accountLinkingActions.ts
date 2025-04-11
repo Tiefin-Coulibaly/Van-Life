@@ -1,6 +1,6 @@
 "use server";
 
-import { processAccountLinking } from "./userAccountsManagement";
+import { processAccountLinking } from "./userAccountsActions";
 
 export async function processAccountLinkingForClient(
   provider: string,

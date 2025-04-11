@@ -13,7 +13,7 @@ import {
   getLinkedProvidersForClient,
   unlinkAccountForClient,
   getCurrentAuthMethod,
-} from "@/app/lib/actions/userAccountActions";
+} from "@/app/lib/actions/userAccountActionsForClient";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
