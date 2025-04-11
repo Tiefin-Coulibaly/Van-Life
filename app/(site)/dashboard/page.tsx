@@ -9,18 +9,11 @@ import { redirect } from "next/navigation";
 
 const OverviewSection = async () => {
   
-  // get the session
   const session = await auth();
 
-  // protect the route by redirecting the user to the 
-  // log in page
   if (!session || !session.user) {
     redirect("/auth/signin")
   }
-
-  
-  console.log(`Session Data:`);
-  console.dir(session, {depth:null});
 
   const overviewData = [
     {

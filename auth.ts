@@ -59,10 +59,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, account, user }) {
+      if (user) {
+        token.sub = user.id as string;
+        token.email = user.email;
+        token.name = user.name;
+        token.firstName = user.firstName as string;
+        token.lastName = user.lastName as string;
+        token.role = user.role;
+      }
+
+      if (account) {
+        token.provider = account.provider;
+        console.log(`Setting token provider from account: ${account.provider}`);
+      } else if (!token.provider) {
+        token.provider = "unknown";
+        console.log("Setting default provider: unknown");
+      }
+
       if (user && account?.provider === "credentials") {
         token.credentials = true;
-        token.sub = user.id;
       }
+
+      console.log("JWT callback - Token:", {
+        sub: token.sub,
+        provider: token.provider,
+      });
 
       return token;
     },
@@ -95,20 +116,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.error("Error linking account in session callback:", error);
       }
 
-      if (user) {
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.sub || user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-          },
-        };
-      }
+      const enhancedSession = {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub || user?.id,
+          email: token.email || user?.email || session.user?.email,
+          name: token.name || user?.name || session.user?.name,
+          firstName:
+            token.firstName || user?.firstName || session.user?.firstName,
+          lastName: token.lastName || user?.lastName || session.user?.lastName,
+          provider: token.provider || "unknown",
+          role: token.role || user?.role || session.user?.role,
+        },
+      };
 
-      return session;
+      console.log("Session provider set to:", enhancedSession.user.provider);
+
+      return enhancedSession;
     },
   },
 

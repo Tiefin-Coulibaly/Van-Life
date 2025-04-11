@@ -21,3 +21,13 @@ export const profileUpdateSchema = object({
     { message: "Password must be between 6 and 32 characters" }
   ),
 });
+
+export const passwordSchema = object({
+    password: string()
+      .min(6, "Password must be at least 6 characters"),
+    confirmPassword: string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
