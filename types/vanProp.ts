@@ -1,10 +1,11 @@
-import { Types } from "mongoose";
+import { Type } from "@prisma/client";
 
 export interface VanCardProps {
   name: string;
   price: number;
-  type: "simple" | "rugged" | "luxury";
-  location: { city: string; country: string };
+  type: Type;
+  city: string; 
+  country: string ;
   rating: number ;
   image: string;
 }

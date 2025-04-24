@@ -4,7 +4,7 @@ import { VanCardProps } from "@/types/vanProp";
 import Link from "next/link";
 
 
-const VanCard: React.FC<VanCardProps> = ({ name, price, type, location, rating, image}) => {
+const VanCard: React.FC<VanCardProps> = ({ name, price, type, city, country, rating, image}) => {
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 duration-300">
       <div className="relative w-full h-56">
@@ -16,13 +16,13 @@ const VanCard: React.FC<VanCardProps> = ({ name, price, type, location, rating, 
 
         <div className="flex items-center justify-between mt-2">
           <span className="text-sm text-gray-600 flex items-center">
-            <FaMapMarkerAlt className="mr-1 text-gray-500" /> {location.city}, {location.country}
+            <FaMapMarkerAlt className="mr-1 text-gray-500" /> {city}, {country}
           </span>
           <span
             className={`px-2 py-1 text-xs font-semibold rounded-lg ${
-              type === "luxury"
+              type === "Luxury"
                 ? "bg-yellow-100 text-yellow-700"
-                : type === "rugged"
+                : type === "Rugged"
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-100 text-blue-700"
             }`}

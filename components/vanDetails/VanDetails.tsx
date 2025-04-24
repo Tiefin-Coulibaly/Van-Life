@@ -11,41 +11,30 @@ import {
 import { IVanDetailsProps } from "@/types/vanDetailsProp";
 import { Carousel } from "@material-tailwind/react";
 
-/**
- * VanDetails Component
- * 
- * This component displays detailed information about a van, including:
- * - A **carousel** for images (with autoplay)
- * - **Van details** (name, price, type, location, rating, availability)
- * - **Key features** (e.g., kitchen, toilet, air conditioning)
- * - **A booking button** (disabled if unavailable)
- * 
- * @component
- * @param {IVanDetailsProps} props - The van details including images, price, type, location, features, etc.
- * @returns {JSX.Element} - A styled component displaying van details
- */
-const VanDetails: React.FC<IVanDetailsProps> = ({
+
+const VanDetails = ({
   name,
   price,
   description,
   images,
   type,
-  location,
+  city,
+  country,
   rating,
   available,
   features,
-}) => {
+}:IVanDetailsProps) => {
   return (
     <div className="mx-auto mb-10 max-w-5xl rounded-lg bg-white p-6 shadow-lg">
-      {/* Carousel Section: Displays images of the van */}
+    
       {images.length > 1 ? (
         <Carousel
           className="relative h-[700px] w-full"
-          autoplay={true} // Enables automatic image sliding
-          loop={true} // Enables infinite loop
-          placeholder="" // ✅ Required by TypeScript
-          onPointerEnterCapture={() => {}} // ✅ Prevents missing event handler error
-          onPointerLeaveCapture={() => {}} // ✅ Prevents missing event handler error
+          autoplay={true} 
+          loop={true} 
+          placeholder="" 
+          onPointerEnterCapture={() => {}} 
+          onPointerLeaveCapture={() => {}} 
         >
           {images.map((image, index) => (
             <img
@@ -78,9 +67,9 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
           {/* Van Type Badge */}
           <span
             className={`rounded-lg px-3 py-1 text-sm font-semibold ${
-              type === "luxury"
+              type === "Luxury"
                 ? "bg-yellow-100 text-yellow-700"
-                : type === "rugged"
+                : type === "Rugged"
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-100 text-blue-700"
             }`}
@@ -113,7 +102,7 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
 
         {/* Location */}
         <p className="mt-2 flex items-center text-gray-600">
-          <FaMapMarkerAlt className="mr-1 text-gray-500" /> {location.city}, {location.country}
+          <FaMapMarkerAlt className="mr-1 text-gray-500" /> {city}, {country}
         </p>
 
         {/* Price */}

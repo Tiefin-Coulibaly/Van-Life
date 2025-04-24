@@ -1,16 +1,6 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-// ==========================================================
-// VANS PAGE UTILS
-// ==========================================================
-/**
- * Updates the URL with the selected van type filter.
- *
- * @param vanType - The selected van type.
- * @param params - The current URL search parameters.
- * @param router - The Next.js App Router instance.
- * @param currentPath - The current route path.
- */
+
 export const handleTypeFilter = (
   vanType: string,
   params: URLSearchParams,
@@ -21,14 +11,7 @@ export const handleTypeFilter = (
   router.push(`${currentPath}?${params.toString()}`);
 };
 
-/**
- * Updates the URL with the minimum price filter.
- *
- * @param value - The minimum price entered by the user.
- * @param params - The current URL search parameters.
- * @param router - The Next.js App Router instance.
- * @param currentPath - The current route path.
- */
+
 export const handleMinFilter = (
   value: string,
   params: URLSearchParams,
