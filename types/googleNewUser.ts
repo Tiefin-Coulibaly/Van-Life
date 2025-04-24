@@ -1,4 +1,4 @@
 export interface IGoogleNewUser {
-  role: "Renter" | "Owner" | "Admin";
+  role: "Renter" | "Admin";
   phone?: string;
 }
