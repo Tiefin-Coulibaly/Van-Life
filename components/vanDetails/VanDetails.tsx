@@ -10,42 +10,82 @@ import {
 } from "react-icons/fa";
 import { IVanDetailsProps } from "@/types/vanDetailsProp";
 import { Carousel } from "@material-tailwind/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { handleBooking } from "@/app/lib/actions/bookingActions";
+import BookingModal from "../payment/BookingModal";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { start } from "repl";
 
-/**
- * VanDetails Component
- * 
- * This component displays detailed information about a van, including:
- * - A **carousel** for images (with autoplay)
- * - **Van details** (name, price, type, location, rating, availability)
- * - **Key features** (e.g., kitchen, toilet, air conditioning)
- * - **A booking button** (disabled if unavailable)
- * 
- * @component
- * @param {IVanDetailsProps} props - The van details including images, price, type, location, features, etc.
- * @returns {JSX.Element} - A styled component displaying van details
- */
-const VanDetails: React.FC<IVanDetailsProps> = ({
+const VanDetails = ({
+  id,
   name,
   price,
   description,
   images,
   type,
-  location,
+  city,
+  country,
   rating,
   available,
   features,
-}) => {
+}: IVanDetailsProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [diffDays, setDiffDays] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { data: UserSession, update } = useSession();
+
+  const handleOpenModal = () => {
+    if (!UserSession) {
+      toast.error("You must be signed in to book a van", {
+        position: "top-center",
+        autoClose: 2500,
+      });
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const processBooking = async () => {
+    handleCloseModal();
+    const checkoutSession = await handleBooking(
+      id,
+      UserSession?.user.id!,
+      name,
+      description,
+      images,
+      price,
+      startDate,
+      endDate,
+      diffDays,
+      totalPrice,
+    );
+    
+    if (checkoutSession) {
+      window.location.href = checkoutSession.url!;
+    } else {
+      console.error("Failed to create booking session");
+    }
+  };
+
   return (
     <div className="mx-auto mb-10 max-w-5xl rounded-lg bg-white p-6 shadow-lg">
-      {/* Carousel Section: Displays images of the van */}
       {images.length > 1 ? (
         <Carousel
           className="relative h-[700px] w-full"
-          autoplay={true} // Enables automatic image sliding
-          loop={true} // Enables infinite loop
-          placeholder="" // ✅ Required by TypeScript
-          onPointerEnterCapture={() => {}} // ✅ Prevents missing event handler error
-          onPointerLeaveCapture={() => {}} // ✅ Prevents missing event handler error
+          autoplay={true}
+          loop={true}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
         >
           {images.map((image, index) => (
             <img
@@ -78,9 +118,9 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
           {/* Van Type Badge */}
           <span
             className={`rounded-lg px-3 py-1 text-sm font-semibold ${
-              type === "luxury"
+              type === "Luxury"
                 ? "bg-yellow-100 text-yellow-700"
-                : type === "rugged"
+                : type === "Rugged"
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-100 text-blue-700"
             }`}
@@ -96,7 +136,9 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
           {/* Availability Badge */}
           <span
             className={`flex items-center rounded-lg px-3 py-1 text-sm font-semibold ${
-              available ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              available
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {available ? (
@@ -105,7 +147,8 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
               </>
             ) : (
               <>
-                <FaExclamationTriangle className="mr-1 text-red-600" /> Not Available
+                <FaExclamationTriangle className="mr-1 text-red-600" /> Not
+                Available
               </>
             )}
           </span>
@@ -113,7 +156,7 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
 
         {/* Location */}
         <p className="mt-2 flex items-center text-gray-600">
-          <FaMapMarkerAlt className="mr-1 text-gray-500" /> {location.city}, {location.country}
+          <FaMapMarkerAlt className="mr-1 text-gray-500" /> {city}, {country}
         </p>
 
         {/* Price */}
@@ -129,7 +172,9 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
               </li>
               <li>
                 Sleeping Capacity:{" "}
-                <span className="font-semibold">{features.sleepingCapacity}</span>
+                <span className="font-semibold">
+                  {features.sleepingCapacity}
+                </span>
               </li>
               <li className="flex items-center">
                 {features.hasKitchen ? (
@@ -180,14 +225,33 @@ const VanDetails: React.FC<IVanDetailsProps> = ({
 
         {/* Booking Button (Disabled if Van is Unavailable) */}
         <button
+          onClick={handleOpenModal}
           className={`mt-6 w-full rounded-lg py-3 text-lg font-semibold transition ${
-            available ? "bg-black text-white hover:bg-gray-900" : "cursor-not-allowed bg-gray-300 text-gray-500"
+            available
+              ? "bg-black text-white hover:bg-gray-900"
+              : "cursor-not-allowed bg-gray-300 text-gray-500"
           }`}
           disabled={!available}
         >
           {available ? "Book Now" : "Unavailable"}
         </button>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onBooking={processBooking}
+        name={name}
+        price={price}
+        vanId={id}
+        setDiffDays={setDiffDays}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setTotalPrice={setTotalPrice}
+        startDate={startDate}
+        endDate={endDate}
+      />
     </div>
   );
 };

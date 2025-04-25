@@ -16,78 +16,41 @@ import {
   toggleTypeClearFilter,
 } from "@/app/lib/utils/vansFiltering";
 
-/**
- * **VansFilter Component**
- *
- * Provides an interactive filtering system for vans, allowing users to filter by:
- * - **Type** (Simple, Rugged, Luxury)
- * - **Price Range** (Min & Max)
- * - **Location** (City or Country)
- * - **Availability Date** (Date Picker)
- *
- * Includes:
- * - **Debounced Search for Performance Optimization**
- * - **Clear Individual and All Filters**
- * - **Responsive Design for Different Screen Sizes**
- *
- * @returns {React.ReactElement} The VansFilter component for filtering van rentals.
- */
+
 const VansFilter: React.FC = (): React.ReactElement => {
-  // State to manage filter visibility on mobile screens
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // State to track if a type filter is applied
   const [isTypeFiltered, setIsTypeFiltered] = useState<boolean>(false);
-
-  // State to determine if any filter is applied
   const [hasAnyFilter, setHasAnyFilter] = useState<boolean>(false);
 
-  // Get URL parameters and router instances
+
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const currentPath = usePathname();
   const router = useRouter();
 
-  /**
-   * Debounced handler for updating the minimum price filter.
-   *
-   * @param value - The minimum price entered by the user.
-   */
+
   const debouncedHandleMinFilter = useDebouncedCallback(
     (value: string) => handleMinFilter(value, params, router, currentPath),
     250,
   );
 
-  /**
-   * Debounced handler for updating the maximum price filter.
-   *
-   * @param value - The maximum price entered by the user.
-   */
+
   const debouncedHandleMaxFilter = useDebouncedCallback(
     (value: string) => handleMaxFilter(value, params, router, currentPath),
     250,
   );
 
-  /**
-   * Debounced handler for updating the location filter (city/country).
-   *
-   * @param value - The location value entered by the user.
-   */
+
   const debouncedHandleLocationFilter = useDebouncedCallback(
     (value: string) => handleLocationFilter(value, params, router, currentPath),
     250,
   );
 
-  /**
-   * Effect to determine if any filter is currently applied.
-   */
+
   useEffect(() => {
     toggleClearAllFilter(params, setHasAnyFilter);
   }, [[...params.keys()].length || 0]);
 
-  /**
-   * Effect to track if a type filter has been applied.
-   */
   useEffect(() => {
     toggleTypeClearFilter("type", params, setIsTypeFiltered);
   }, [params.get("type")]);
@@ -113,7 +76,7 @@ const VansFilter: React.FC = (): React.ReactElement => {
               key={type}
               onClick={() =>
                 handleTypeFilter(
-                  type.toLowerCase(),
+                  type,
                   params,
                   router,
                   currentPath,
