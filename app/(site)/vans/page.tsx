@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import VansList from "@/components/vans/VanList";
 import VansFilter from "@/components/vans/VansFilter";
 import { ISearchParams } from "@/types/searchParams";
-import { updatePaymentMethod } from "@/app/lib/actions/bookingActions";
 
 const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
   const searchParams = await props.searchParams;
