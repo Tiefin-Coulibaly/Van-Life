@@ -1,10 +1,14 @@
 import { fetchVanById } from "@/app/lib/actions/vanActions";
 import VanDetails from "@/components/vanDetails/VanDetails";
-import { isVanAvailable, updateVanAvailability } from "@/app/lib/actions/vanActions";
+import {
+  isVanAvailable,
+  updateVanAvailability,
+} from "@/app/lib/actions/vanActions";
 
 const page = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;
   const id = params.id;
+  console.log("Van ID:", id);
   const van = await fetchVanById(id);
   const isVanAvailableNow = await isVanAvailable(van?.bookings ?? []);
 
@@ -16,6 +20,7 @@ const page = async (props: { params: Promise<{ id: string }> }) => {
     <main className="mt-30">
       {van && (
         <VanDetails
+          id={van.id}
           name={van.name as string}
           price={van.price}
           description={van.description}

@@ -106,18 +106,19 @@ model Van {
 }
 
 model Booking {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  vanId       String        @db.ObjectId
-  van         Van           @relation(fields: [vanId], references: [id])
-  userId      String        @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id])
-  startDate   DateTime
-  endDate     DateTime
-  status      BookingStatus @default(Pending)
-  totalAmount Float
-  payment     Payment?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  vanId           String        @db.ObjectId
+  van             Van           @relation(fields: [vanId], references: [id])
+  userId          String        @db.ObjectId
+  user            User          @relation(fields: [userId], references: [id])
+  startDate       DateTime
+  endDate         DateTime
+  status          BookingStatus @default(Pending)
+  totalAmount     Float
+  stripeSessionId String?
+  payment         Payment?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@map("bookings")
 }
@@ -137,18 +138,18 @@ model Review {
 }
 
 model Payment {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  bookingId String        @unique @db.ObjectId
-  booking   Booking       @relation(fields: [bookingId], references: [id])
-  userId    String        @db.ObjectId
-  user      User          @relation(fields: [userId], references: [id])
-  vanId     String        @db.ObjectId
-  van       Van           @relation(fields: [vanId], references: [id])
-  amount    Float
-  status    PaymentStatus @default(Pending)
-  method    PaymentMethod @default(CreditCard)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId       String        @unique @db.ObjectId
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  userId          String        @db.ObjectId
+  user            User          @relation(fields: [userId], references: [id])
+  vanId           String        @db.ObjectId
+  van             Van           @relation(fields: [vanId], references: [id])
+  stripePaymentId String?
+  receiptUrl      String?
+  method          PaymentMethod @default(Card)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@map("payments")
 }
@@ -159,7 +160,7 @@ model Notification {
   user      User             @relation(fields: [userId], references: [id])
   type      NotificationType
   title     String
-  Message   String
+  message   String
   link      String?
   read      Boolean          @default(false)
   createdAt DateTime         @default(now())
@@ -175,14 +176,8 @@ enum Role {
 }
 
 enum PaymentMethod {
-  CreditCard
+  Card
   Paypal
-}
-
-enum PaymentStatus {
-  Pending
-  Confirmed
-  Failed
 }
 
 enum BookingStatus {

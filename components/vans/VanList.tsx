@@ -19,6 +19,7 @@ const VansList = async (props: { searchParams?: ISearchParams }) => {
         <Link href={`/vans/${van.id}`}>
           <VanCard
           key={van.id.toString()}
+          id={van.id}
           name={van.name as string}
           price={van.price}
           image={van.images[0]}

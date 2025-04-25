@@ -10,9 +10,16 @@ import {
 } from "react-icons/fa";
 import { IVanDetailsProps } from "@/types/vanDetailsProp";
 import { Carousel } from "@material-tailwind/react";
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { handleBooking } from "@/app/lib/actions/bookingActions";
+import BookingModal from "../payment/BookingModal";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { start } from "repl";
 
 const VanDetails = ({
+  id,
   name,
   price,
   description,
@@ -23,18 +30,62 @@ const VanDetails = ({
   rating,
   available,
   features,
-}:IVanDetailsProps) => {
+}: IVanDetailsProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [diffDays, setDiffDays] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { data: UserSession, update } = useSession();
+
+  const handleOpenModal = () => {
+    if (!UserSession) {
+      toast.error("You must be signed in to book a van", {
+        position: "top-center",
+        autoClose: 2500,
+      });
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const processBooking = async () => {
+    handleCloseModal();
+    const checkoutSession = await handleBooking(
+      id,
+      UserSession?.user.id!,
+      name,
+      description,
+      images,
+      price,
+      startDate,
+      endDate,
+      diffDays,
+      totalPrice,
+    );
+    
+    if (checkoutSession) {
+      window.location.href = checkoutSession.url!;
+    } else {
+      console.error("Failed to create booking session");
+    }
+  };
+
   return (
     <div className="mx-auto mb-10 max-w-5xl rounded-lg bg-white p-6 shadow-lg">
-    
       {images.length > 1 ? (
         <Carousel
           className="relative h-[700px] w-full"
-          autoplay={true} 
-          loop={true} 
-          placeholder="" 
-          onPointerEnterCapture={() => {}} 
-          onPointerLeaveCapture={() => {}} 
+          autoplay={true}
+          loop={true}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
         >
           {images.map((image, index) => (
             <img
@@ -85,7 +136,9 @@ const VanDetails = ({
           {/* Availability Badge */}
           <span
             className={`flex items-center rounded-lg px-3 py-1 text-sm font-semibold ${
-              available ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              available
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {available ? (
@@ -94,7 +147,8 @@ const VanDetails = ({
               </>
             ) : (
               <>
-                <FaExclamationTriangle className="mr-1 text-red-600" /> Not Available
+                <FaExclamationTriangle className="mr-1 text-red-600" /> Not
+                Available
               </>
             )}
           </span>
@@ -118,7 +172,9 @@ const VanDetails = ({
               </li>
               <li>
                 Sleeping Capacity:{" "}
-                <span className="font-semibold">{features.sleepingCapacity}</span>
+                <span className="font-semibold">
+                  {features.sleepingCapacity}
+                </span>
               </li>
               <li className="flex items-center">
                 {features.hasKitchen ? (
@@ -169,14 +225,33 @@ const VanDetails = ({
 
         {/* Booking Button (Disabled if Van is Unavailable) */}
         <button
+          onClick={handleOpenModal}
           className={`mt-6 w-full rounded-lg py-3 text-lg font-semibold transition ${
-            available ? "bg-black text-white hover:bg-gray-900" : "cursor-not-allowed bg-gray-300 text-gray-500"
+            available
+              ? "bg-black text-white hover:bg-gray-900"
+              : "cursor-not-allowed bg-gray-300 text-gray-500"
           }`}
           disabled={!available}
         >
           {available ? "Book Now" : "Unavailable"}
         </button>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onBooking={processBooking}
+        name={name}
+        price={price}
+        vanId={id}
+        setDiffDays={setDiffDays}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setTotalPrice={setTotalPrice}
+        startDate={startDate}
+        endDate={endDate}
+      />
     </div>
   );
 };
