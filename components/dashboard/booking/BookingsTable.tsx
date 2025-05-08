@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import {
   FaMapMarkerAlt,
@@ -11,52 +10,62 @@ import {
 } from "react-icons/fa";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
+import { BookingWithVan } from "@/types/bookingTypes";
+import { useState, useEffect } from "react";
+import { BookingStatus } from "@prisma/client";
+import { formatDate } from "@/app/lib/actions/dashboardActions";
 
-/**
- * **BookingsTable Component**
- *
- * Displays a table of user van bookings, including:
- * - Van details with an image
- * - Booking start and end dates
- * - Status indicators (confirmed, canceled, pending)
- *
- * Features:
- * - **Responsive Design** (Mobile-first with a hidden table on small screens)
- * - **Dynamic Status Display** with icons for visual clarity
- * - **Tailwind Styling** for a clean and modern look
- *
- * @returns {React.ReactElement} A responsive table displaying user bookings.
- */
-const BookingsTable = (): React.ReactElement => {
-  // Mock data for booked vans
-  const userVans = [1, 2];
+const BookingsTable = () => {
+  const { data: session } = useSession();
+  const [bookings, setBookings] = useState<BookingWithVan[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Example status (can be replaced with real data from an API)
-  const status: "confirmed" | "canceled" | "pending" = "canceled";
+  useEffect(() => {
+    const getBookings = async () => {
+      if (!session?.user?.id) return;
 
-  /**
-   * **Returns a JSX element representing the booking status.**
-   *
-   * @param { "confirmed" | "canceled" | "pending" } status - The status of the booking.
-   * @returns {React.ReactElement} A badge with an icon indicating the status.
-   */
-  const handleStatus = (
-    status: "confirmed" | "canceled" | "pending",
-  ): React.ReactElement => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/bookings?userId=${session.user.id}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch bookings");
+        }
+
+        const data = await response.json();
+        setBookings(data.bookings);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+        setError("Failed to load bookings");
+        setBookings(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session?.user?.id) {
+      getBookings();
+    }
+  }, [session?.user?.id]);
+
+  const handleStatus = (status: BookingStatus) => {
     switch (status) {
-      case "confirmed":
+      case "Confirmed":
         return (
           <>
             <FaCheckCircle className="mr-1 text-green-600" /> Confirmed
           </>
         );
-      case "canceled":
+      case "Canceled":
         return (
           <>
             <FaExclamationTriangle className="mr-1 text-red-600" /> Canceled
           </>
         );
-      case "pending":
+      case "Pending":
         return (
           <>
             <ClockIcon className="mr-1 h-5 w-5 text-gray-700" /> Pending
@@ -67,12 +76,40 @@ const BookingsTable = (): React.ReactElement => {
     }
   };
 
-  // Dynamic styling for the status badge using clsx
-  const bookingStatusStyle = clsx({
-    "bg-green-100 text-green-700": (status as string) === "confirmed",
-    "bg-red-100 text-red-700": (status as string) === "canceled",
-    "bg-gray-100 text-gray-700": (status as string) === "pending",
-  });
+  if (loading) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <p className="mt-2 text-gray-600">Loading bookings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <div className="text-center text-red-600">
+          <p>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!bookings || bookings.length === 0) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <p className="text-gray-600">No bookings.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-6 flow-root">
@@ -80,14 +117,17 @@ const BookingsTable = (): React.ReactElement => {
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           {/* Mobile Layout */}
           <div className="md:hidden">
-            {userVans?.map((van) => (
-              <div key={van} className="mb-2 w-full rounded-md bg-white p-4">
+            {bookings?.map((booking) => (
+              <div
+                key={booking.id}
+                className="mb-2 w-full rounded-md bg-white p-4"
+              >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <div className="relative size-20">
                         <Image
-                          src="/van1_thumbnail.jpg"
+                          src={booking.van.images[0]}
                           className="rounded-lg"
                           alt={`Van's thumbnail`}
                           layout="fill"
@@ -96,17 +136,26 @@ const BookingsTable = (): React.ReactElement => {
                       <p className="ml-2">Van name</p>
                     </div>
                     <span
-                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${bookingStatusStyle}`}
+                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${clsx(
+                        {
+                          "bg-green-100 text-green-700":
+                            booking.status === "Confirmed",
+                          "bg-red-100 text-red-700":
+                            booking.status === "Canceled",
+                          "bg-gray-100 text-gray-700":
+                            booking.status === "Pending",
+                        },
+                      )}`}
                     >
-                      {handleStatus(status)}
+                      {handleStatus(booking.status)}
                     </span>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex gap-1">
-                    <p>Feb 28, 2025</p>
+                    <p>{formatDate(booking.startDate)}</p>
                     <span>|</span>
-                    <p>Feb 28, 2025</p>
+                    <p>{formatDate(booking.endDate)}</p>
                   </div>
                 </div>
               </div>
@@ -135,16 +184,16 @@ const BookingsTable = (): React.ReactElement => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {userVans?.map((van) => (
+              {bookings?.map((booking) => (
                 <tr
-                  key={van}
+                  key={booking.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <div className="relative size-30">
                         <Image
-                          src="/van1_thumbnail.jpg"
+                          src={booking.van.images[0]}
                           className="rounded-lg"
                           alt={`Van's thumbnail`}
                           layout="fill"
@@ -153,13 +202,26 @@ const BookingsTable = (): React.ReactElement => {
                       <p>Van Name</p>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">Feb 28, 2025</td>
-                  <td className="whitespace-nowrap px-3 py-3">Feb 28, 2025</td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatDate(booking.startDate)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatDate(booking.endDate)}
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <span
-                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${bookingStatusStyle}`}
+                      className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${clsx(
+                        {
+                          "bg-green-100 text-green-700":
+                            booking.status === "Confirmed",
+                          "bg-red-100 text-red-700":
+                            booking.status === "Canceled",
+                          "bg-gray-100 text-gray-700":
+                            booking.status === "Pending",
+                        },
+                      )}`}
                     >
-                      {handleStatus(status)}
+                      {handleStatus(booking.status)}
                     </span>
                   </td>
                 </tr>
