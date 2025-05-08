@@ -1,9 +1,4 @@
-import { Types } from "mongoose";
+import { Review, Van } from "@prisma/client";
 
-export interface IReview extends Document {
-  vanId:  Types.ObjectId;
-  renterId: Types.ObjectId;
-  comment?: string;
-  rating: number;
-  date: Date;
-}
+export interface ReviewWithVan extends Review {
+  van: Van}

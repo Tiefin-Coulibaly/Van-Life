@@ -1,4 +1,4 @@
-import { IBooking } from "@/types/booking";
+import { IBooking } from "@/types/bookingTypes";
 import { Schema } from "mongoose";
 
 export const BookingSchema: Schema = new Schema<IBooking>({

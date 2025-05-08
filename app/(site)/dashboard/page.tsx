@@ -1,59 +1,64 @@
-import Card from "@/components/dashboard/Card";
-import {
-  TruckIcon,
-  CurrencyDollarIcon,
-  GlobeAltIcon,
-} from "@heroicons/react/24/outline";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { StarIcon, ClockIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  calculateBookingStats,
+  calculateRatingStats,
+  fetchBookings,
+  fetchReviewsWithVans,
+  getTotalVans,
+  userStats,
+} from "@/app/lib/actions/dashboardActions";
+import { Booking, Review, Van } from "@prisma/client";
+import KeyMetrics from "@/components/dashboard/overview/keyMetrics/KeyMetrics";
+import RecentBookings from "@/components/dashboard/overview/recentBookings/RecentBookings";
+import RecentReviews from "@/components/dashboard/overview/recentReviews/RecentReviews";
 
 const OverviewSection = async () => {
-  
   const session = await auth();
 
   if (!session || !session.user) {
-    redirect("/auth/signin")
+    redirect("/auth/signin");
   }
 
-  const overviewData = [
-    {
-      title: "Total Vans",
-      value: "5",
-      icon: <TruckIcon className="size-4.5" />,
-    },
-    {
-      title: "Total Trips",
-      value: "12",
-      icon: <GlobeAltIcon className="size-4.5" />,
-    },
-    {
-      title: "Pending Payments",
-      value: "$320",
-      icon: <CurrencyDollarIcon className="size-4.5" />,
-    },
-    {
-      title: "Earnings",
-      value: "$2,500",
-      icon: <CurrencyDollarIcon className="size-4.5" />,
-    },
-  ];
+  const userData = await userStats(session.user.id as string);
+  const bookingStats = calculateBookingStats(userData?.bookings as Booking[]);
+  const totalVans = getTotalVans(userData?.vansRented as Van[]);
+  const ratingStats = calculateRatingStats(userData?.reviews as Review[]);
+  const bookingsWithVans = await fetchBookings(session.user.id as string);
+  const reviewsWithVans = await fetchReviewsWithVans(session.user.id as string);
+
+
   return (
-    <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
-      <h1 className="mb-8 text-3xl font-semibold text-gray-900">
-        Hi, {session.user.name || `${session.user.firstName} ${session.user.lastName}`}
-      </h1>
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        
-        {overviewData.map((data) => (
-          <Card
-            key={data.title}
-            title={data.title}
-            value={data.value}
-            icon={data.icon}
-          />
-        ))}
+    <>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Welcome back,{" "}
+          {session.user.name ||
+            `${session.user.firstName || ""} ${session.user.lastName || ""}`}
+        </h1>
+        <p className="mt-1 text-gray-600">
+          Here's what's happening with your rentals today.
+        </p>
       </div>
-    </section>
+
+      {/* Key metrics */}
+      <KeyMetrics
+        bookingStats={bookingStats}
+        vansTotal={totalVans}
+        ratingStats={ratingStats}
+      />
+
+      {/* Recent bookings and upcoming section */}
+      <RecentBookings bookings={bookingsWithVans} />
+
+      <div className="grid grid-cols-1">
+        {/* Recent reviews or user activity */}
+        <RecentReviews reviews={reviewsWithVans}/>
+      </div>
+    </>
   );
 };
 

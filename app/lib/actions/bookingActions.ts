@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import Stripe from "stripe";
 import { determineBookingStatus } from "../utils/booking";
+import { BookingStats } from "@/types/bookingTypes";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
