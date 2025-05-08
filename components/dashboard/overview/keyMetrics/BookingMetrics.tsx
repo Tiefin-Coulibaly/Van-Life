@@ -1,5 +1,5 @@
 import { BookingStats } from "@/types/bookingTypes";
-import Card from "../Card";
+import Card from "../../Card";
 import {
   CalendarIcon,
   ArrowUpIcon,

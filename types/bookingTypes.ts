@@ -1,4 +1,4 @@
-import { Booking } from "@prisma/client";
+import { Booking, Van } from "@prisma/client";
 
 export type BookingStatusCount = {
   pending: number;
@@ -9,6 +9,7 @@ export type BookingStatusCount = {
 export type BookingStats = {
   totalBookings?: number;
   totalAmount?: number;
+  sortedBookings?: Booking[];
   bookingTrend?: string;
   isBookingUp?: boolean;
   revenueTrend?: string;
@@ -18,3 +19,6 @@ export type BookingStats = {
   bookingStatusCount?: BookingStatusCount;
   revenueStatusCount?: BookingStatusCount;
 };
+export interface BookingWithVan extends Booking {
+  van: Van;
+}

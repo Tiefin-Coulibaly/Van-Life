@@ -1,6 +1,6 @@
 import React from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
-import Card from "../Card";
+import Card from "../../Card";
 
 const ReviewMetrics = ({ totalReview, averageRating, recentRating }) => {
   return (

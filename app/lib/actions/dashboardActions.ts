@@ -1,6 +1,8 @@
 import { prisma } from "@/prisma/prisma";
 import { BookingStats } from "@/types/bookingTypes";
-import { Booking, Van } from "@prisma/client";
+import { Booking, Review, Van } from "@prisma/client";
+import { BookingWithVan } from "@/types/bookingTypes";
+import { ReviewWithVan } from "@/types/review";
 
 export const userStats = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -90,10 +92,9 @@ const calculateMonthsExpenses = (
   const currentMonthExpenses = bookings.reduce((acc, booking) => {
     const bookingDate = new Date(booking.startDate);
     if (bookingDate >= currentMonthStart) {
-        
       return acc + Number(booking.totalAmount);
     }
-    
+
     return acc;
   }, 0);
 
@@ -127,7 +128,7 @@ const calculateRevenuePerStatus = (bookings: Booking[]) => {
   return revenueStatusCount;
 };
 
-export const calculateBookingStats =  (bookings: Booking[]) => {
+export const calculateBookingStats = (bookings: Booking[]) => {
   const {
     currentMonthBookings,
     previousMonthBookings,
@@ -147,11 +148,8 @@ export const calculateBookingStats =  (bookings: Booking[]) => {
     return dateA - dateB;
   });
 
-  const { currentMonthExpenses, previousMonthExpenses } = calculateMonthsExpenses(
-    bookings,
-    currentMonthStart,
-    previousMonthStart,
-  );
+  const { currentMonthExpenses, previousMonthExpenses } =
+    calculateMonthsExpenses(bookings, currentMonthStart, previousMonthStart);
 
   const { trend: bookingTrend, isUp: isBookingUp } = calculateTrend(
     currentMonthBookings.length,
@@ -208,3 +206,71 @@ export const calculateRatingStats = (reviews: any[]) => {
     recentRating,
   };
 };
+
+export const fetchBookings = async (
+  userId: string,
+): Promise<BookingWithVan[]> => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      van: true,
+    },
+  });
+  await prisma.$disconnect();
+  return bookings;
+};
+
+export const formatDate = (dateString: string | Date) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+};
+
+export function getRecentElements<T>(
+  elements: T[],
+  sortProperty: keyof T,
+  limit: number = 3,
+): T[] {
+  if (!elements || elements.length === 0) {
+    return [];
+  }
+
+  const sortedElements = [...elements].sort((a, b) => {
+    const valueA = a[sortProperty];
+    const valueB = b[sortProperty];
+
+    const dateA = valueA instanceof Date ? valueA : new Date(valueA as string);
+    const dateB = valueB instanceof Date ? valueB : new Date(valueB as string);
+
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  return sortedElements.slice(0, limit);
+}
+
+export const fetchReviewsWithVans = async (
+  userId: string,
+): Promise<ReviewWithVan[]> => {
+  const reviews = await prisma.review.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      van: true,
+    },
+  });
+
+  return reviews;
+};
+
+export const determineHowManyDaysAgo = (date: Date):number => {
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  return diffDays;  
+}
