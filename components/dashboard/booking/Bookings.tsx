@@ -3,6 +3,7 @@
 import React from "react";
 import BookingsTable from "./BookingsTable";
 
+
 const Bookings = (): React.ReactElement => {
   return (
     <section className="bg-white p-6 rounded-lg shadow-md mb-6">

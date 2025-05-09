@@ -72,6 +72,10 @@ export const UserDataProvider = ({
   const dataLoaded = useRef(false);
   const lastUserId = useRef<string | null>(null);
 
+  console.log("UserDataProvider:", userData);
+  console.log("Bookings:", bookings);
+  console.log("status:", status);
+
   const fetchUserData = async (force = false) => {
     if (!session?.user?.id) {
       setIsLoading(false);

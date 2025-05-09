@@ -12,8 +12,11 @@ import { BookingStatus } from "@prisma/client";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
 import { useUserData } from "@/components/context/userDataContext";
 
+
 const BookingsTable = () => {
   const { bookings, isLoading } = useUserData();
+
+
 
   useEffect(() => {
     if (bookings?.length > 0) {

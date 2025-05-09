@@ -2,6 +2,14 @@
 
 import { SessionProvider } from "next-auth/react";
 import { UserDataProvider } from "@/components/context/userDataContext";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+
 
 const Provider = ({
   children,
@@ -12,7 +20,9 @@ const Provider = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <UserDataProvider>{children}</UserDataProvider>
+     
+    <UserDataProvider>{children}</UserDataProvider>
+     
     </SessionProvider>
   );
 };
