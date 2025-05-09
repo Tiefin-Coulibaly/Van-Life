@@ -38,6 +38,7 @@ interface UserDataContextType {
   refreshData: () => Promise<void>;
   markAllNotificationsAsRead: () => Promise<void>;
   markNotificationAsRead: (notificationId: string) => Promise<void>;
+  authStatus: string;
 }
 
 const UserDataContext = createContext<UserDataContextType>({
@@ -52,6 +53,7 @@ const UserDataContext = createContext<UserDataContextType>({
   markAllNotificationsAsRead: async () => {},
   markNotificationAsRead: async () => {},
   refreshData: async () => {},
+  authStatus:"unauthenticated"
 });
 
 export const UserDataProvider = ({
@@ -73,7 +75,6 @@ export const UserDataProvider = ({
   const lastUserId = useRef<string | null>(null);
 
   console.log("UserDataProvider:", userData);
-  console.log("Bookings:", bookings);
   console.log("status:", status);
 
   const fetchUserData = async (force = false) => {
@@ -196,6 +197,7 @@ export const UserDataProvider = ({
     refreshData,
     markAllNotificationsAsRead,
     markNotificationAsRead,
+    authStatus: status,
   };
 
   return (
