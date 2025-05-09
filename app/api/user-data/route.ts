@@ -1,8 +1,7 @@
-// app/api/bookings/route.ts
+
 import { NextResponse } from "next/server";
-import { prisma } from "@/prisma/prisma";
 import { auth } from "@/auth";
-import { fetchBookings } from "@/app/lib/actions/dashboardActions";
+import { fetchUserData } from "@/app/lib/actions/dashboardActions";
 
 export async function GET(request: Request) {
   try {
@@ -18,13 +17,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const bookings = await fetchBookings(userId as string);
+    const userData = await fetchUserData(userId as string);
 
-    return NextResponse.json({ bookings });
+    return NextResponse.json( userData );
   } catch (error) {
     console.error("Error fetching bookings:", error);
     return NextResponse.json(
-      { error: "Failed to fetch bookings" },
+      { error: "Failed to fetch userData" },
       { status: 500 },
     );
   }

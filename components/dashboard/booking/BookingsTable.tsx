@@ -2,54 +2,27 @@
 
 import Image from "next/image";
 import {
-  FaMapMarkerAlt,
-  FaStar,
   FaCheckCircle,
-  FaTimesCircle,
   FaExclamationTriangle,
 } from "react-icons/fa";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
-import { BookingWithVan } from "@/types/bookingTypes";
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import { BookingStatus } from "@prisma/client";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
+import { useUserData } from "@/components/context/userDataContext";
 
 const BookingsTable = () => {
-  const { data: session } = useSession();
-  const [bookings, setBookings] = useState<BookingWithVan[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { bookings, isLoading } = useUserData();
 
   useEffect(() => {
-    const getBookings = async () => {
-      if (!session?.user?.id) return;
-
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/bookings?userId=${session.user.id}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch bookings");
-        }
-
-        const data = await response.json();
-        setBookings(data.bookings);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching bookings:", err);
-        setError("Failed to load bookings");
-        setBookings(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (session?.user?.id) {
-      getBookings();
+    if (bookings?.length > 0) {
+      console.log(
+        "First booking van image URL:",
+        bookings[0]?.van?.images?.[0],
+      );
     }
-  }, [session?.user?.id]);
+  }, [bookings]);
 
   const handleStatus = (status: BookingStatus) => {
     switch (status) {
@@ -76,28 +49,12 @@ const BookingsTable = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-40 items-center justify-center">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
           <p className="mt-2 text-gray-600">Loading bookings...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <div className="text-center text-red-600">
-          <p>{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Try Again
-          </button>
         </div>
       </div>
     );
@@ -116,25 +73,38 @@ const BookingsTable = () => {
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           {/* Mobile Layout */}
-          <div className="md:hidden">
+          <div className="flex flex-col items-center gap-4 md:hidden">
             {bookings?.map((booking) => (
               <div
                 key={booking.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <div className="relative size-20">
-                        <Image
-                          src={booking.van.images[0]}
-                          className="rounded-lg"
-                          alt={`Van's thumbnail`}
-                          layout="fill"
-                        />
+                <div className="border-b pb-4">
+                  <div className="flex w-full items-center justify-between ">
+                    {/* Left side: Van image and name */}
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="relative h-20 w-20">
+                        {booking.van?.images?.[0] ? (
+                          <Image
+                            src={booking.van.images[0]}
+                            alt={`${booking.van.name || "Van"} thumbnail`}
+                            fill
+                            sizes="(max-width: 768px) 80px, 40px"
+                            className="rounded-lg object-cover"
+                            priority
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-200">
+                            <span className="text-xs text-gray-500">
+                              No image
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      <p className="ml-2">Van name</p>
+                      <p className="text-sm">{booking.van?.name || "Van"}</p>
                     </div>
+
+                    {/* Right side: Status badge */}
                     <span
                       className={`flex items-center justify-center rounded-lg px-3 py-1 text-sm font-semibold ${clsx(
                         {
@@ -191,15 +161,18 @@ const BookingsTable = () => {
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <div className="relative size-30">
-                        <Image
-                          src={booking.van.images[0]}
-                          className="rounded-lg"
-                          alt={`Van's thumbnail`}
-                          layout="fill"
-                        />
+                      <div className="relative h-30 w-30">
+                        {booking.van?.images?.[0] && (
+                          <Image
+                            src={booking.van.images[0]}
+                            className="rounded-lg object-cover"
+                            alt={`${booking.van.name || "Van"}'s thumbnail`}
+                            fill
+                            priority
+                          />
+                        )}
                       </div>
-                      <p>Van Name</p>
+                      <p>{booking.van.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

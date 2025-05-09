@@ -4,27 +4,14 @@ import { links } from "./NavLinks";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import SignOutBtn from "./SignOutBtn";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
-/**
- * DesktopLayout Component
- *
- * This component provides a sidebar navigation menu designed for desktop layouts.
- * It displays a user dashboard with navigation links and a sign-out button.
- *
- * Features:
- * - Fixed sidebar for easy access to dashboard sections.
- * - Highlights the active link based on the current path.
- * - Responsive behavior: Visible only on large screens (`lg:block`).
- *
- * @returns {React.ReactElement} The desktop sidebar navigation layout.
- */
 const DesktopLayout = (): React.ReactElement => {
   const pathName = usePathname();
-
   const { data: session } = useSession();
-
+  const user = session?.user;
+  
 
   return (
     <aside
@@ -49,13 +36,15 @@ const DesktopLayout = (): React.ReactElement => {
               },
             )}
           >
-            {link.name === "Profile" && session?.user.image ? (
-              <div className="relative size-8">
+            {link.name === "Profile" && user?.image ? (
+              <div className="relative h-8 w-8">
                 <Image
                   alt="user's image"
-                  src={session.user.image}
+                  src={user.image}
                   fill
+                  sizes="32px"
                   className="rounded-full object-cover shadow-md"
+                  priority
                 />
               </div>
             ) : (

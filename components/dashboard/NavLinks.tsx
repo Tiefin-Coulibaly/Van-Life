@@ -8,21 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 
-/**
- * Navigation Links Configuration
- *
- * This array defines the reusable navigation links for the user dashboard.
- * Each link includes:
- * - `name`: The display name of the navigation item.
- * - `href`: The URL path for the navigation link.
- * - `icon`: The associated Heroicon component for visual representation.
- *
- * The icons are imported from Heroicons and styled with a width of `w-6`.
- *
- * @constant
- * @type {Array<{ name: string; href: string; icon: React.ReactElement }>}
- */
-
 
 export const links: { name: string; href: string; icon: React.ReactElement }[] =
   [

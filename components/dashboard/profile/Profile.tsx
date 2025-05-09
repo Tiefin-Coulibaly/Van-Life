@@ -73,7 +73,7 @@ const Profile = () => {
       <div className="flex items-center gap-4">
         <div className="relative h-24 w-24">
           {session?.user.image ? (
-            <div className="relative size-24">
+            <div className="relative h-24 w-24">
               <Image
                 alt="User's image"
                 src={session?.user?.image}

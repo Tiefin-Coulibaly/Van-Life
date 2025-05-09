@@ -3,6 +3,8 @@ import { BookingStats } from "@/types/bookingTypes";
 import { Booking, Review, Van } from "@prisma/client";
 import { BookingWithVan } from "@/types/bookingTypes";
 import { ReviewWithVan } from "@/types/review";
+import { revalidatePath } from "next/cache";
+import { FetchUserDataResult } from "@/types/user";
 
 export const userStats = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -18,7 +20,6 @@ export const userStats = async (userId: string) => {
     },
   });
 
-  console.dir(user, { depth: null });
   return user;
 };
 
@@ -222,6 +223,40 @@ export const fetchBookings = async (
   return bookings;
 };
 
+export const fetchUserData = async (
+  userId: string,
+): Promise<FetchUserDataResult> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      bookings: {
+        include: {
+          van: true,
+        },
+      },
+      payments: {
+        include: {
+          booking: true,
+        },
+      },
+      notifications: true,
+      reviews: {
+        include: {
+          van: true,
+        },
+      },
+      vansRented: {
+        include: {
+          reviews: true,
+        },
+      },
+    },
+  });
+  return user;
+};
+
 export const formatDate = (dateString: string | Date) => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {
@@ -268,9 +303,9 @@ export const fetchReviewsWithVans = async (
   return reviews;
 };
 
-export const determineHowManyDaysAgo = (date: Date):number => {
+export const determineHowManyDaysAgo = (date: Date): number => {
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-  return diffDays;  
-}
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+};

@@ -23,6 +23,7 @@ export default function RootLayout({
       <body
         className={`dark:bg-black ${inter.className} container mx-auto flex min-h-screen flex-col px-4 md:px-8`}
       >
+        
         <Provider>
           {" "}
           <ThemeProvider
@@ -36,8 +37,8 @@ export default function RootLayout({
             {children}
 
             <ToastContainer
-              position="top-right"
-              autoClose={3000}
+              position="top-center"
+              autoClose={1000}
               hideProgressBar={false}
               newestOnTop
               closeOnClick
