@@ -156,6 +156,39 @@ const getReceiptURL = async (
   return receiptUrl;
 };
 
+const updateUserVansRented = async (userId: string, vanId: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        vansRented: {
+          where: { id: vanId },
+          select: { id: true },
+        },
+      },
+    });
+    if (user && user.vansRented.length === 0) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          vansRented: {
+            connect: { id: vanId },
+          },
+        },
+      });
+      console.log(
+        `Added van ${vanId} to user ${userId}'s vansRented collection`,
+      );
+    } else {
+      console.log(
+        `Van ${vanId} already in user ${userId}'s vansRented collection`,
+      );
+    }
+  } catch (error) {
+    console.error("Error updating user's vansRented collection:", error);
+  }
+};
+
 export const generateReceiptData = async (sessionId: string) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: [
@@ -221,6 +254,7 @@ export const generateReceiptData = async (sessionId: string) => {
     notificationMessage,
   );
 
+  await updateUserVansRented(metadata.userId, metadata.vanId);
   return {
     receiptId: payment.id,
     bookingId: booking.id,
@@ -235,4 +269,3 @@ export const generateReceiptData = async (sessionId: string) => {
     customerEmail: session.customer_details?.email,
   };
 };
-

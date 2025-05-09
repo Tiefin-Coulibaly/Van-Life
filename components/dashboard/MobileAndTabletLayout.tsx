@@ -10,21 +10,8 @@ import SignOutBtn from "./SignOutBtn";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
-/**
- * MobileAndTabletLayout Component
- *
- * This component renders a responsive navigation menu specifically designed for mobile
- * and tablet screens. It includes navigation links and a sign-out button.
- *
- * Features:
- * - **Dynamic Active State:** Highlights the active link based on the current path.
- * - **Responsive Design:** Tailored for small and medium screens (`lg:hidden`).
- * - **Sign Out Button:** Provides an easy way for users to log out.
- *
- * @returns {React.ReactElement} A responsive navigation menu for mobile and tablet layouts.
- */
 const MobileAndTabletLayout = (): React.ReactElement => {
-  // Get the current pathname to determine the active link
+ 
   const pathName = usePathname();
   const { data: session } = useSession();
 
@@ -39,12 +26,12 @@ const MobileAndTabletLayout = (): React.ReactElement => {
             className={clsx(
               "hover:bg-sky-100 flex gap-2 h-[48px] grow items-center justify-center rounded-md bg-gray-50 p-3 font-medium hover:text-blue-600",
               {
-                "bg-sky-100 text-blue-600": pathName === link.href, // Highlight active link
+                "bg-sky-100 text-blue-600": pathName === link.href, 
               },
             )}
           >
             {link.name === "Profile" && session?.user.image ? (
-              <div className="relative size-8">
+              <div className="relative h-8 w-8">
                 <Image
                   alt="user's image"
                   src={session.user.image}

@@ -23,6 +23,7 @@ const OverviewSection = async () => {
     redirect("/auth/signin");
   }
 
+  
   const userData = await userStats(session.user.id as string);
   const bookingStats = calculateBookingStats(userData?.bookings as Booking[]);
   const totalVans = getTotalVans(userData?.vansRented as Van[]);

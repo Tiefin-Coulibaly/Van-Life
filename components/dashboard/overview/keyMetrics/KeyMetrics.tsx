@@ -4,7 +4,6 @@ import ReviewMetrics from "./ReviewMetrics";
 import VansMetrics from "./VansMetrics";
 
 const KeyMetrics = ({ bookingStats, vansTotal, ratingStats }) => {
-  console.log("KeyMetrics bookingStats", bookingStats);
   return (
     <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
       <BookingMetrics

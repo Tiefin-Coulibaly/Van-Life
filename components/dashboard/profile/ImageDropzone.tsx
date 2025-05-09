@@ -16,8 +16,11 @@ import { useSession } from "next-auth/react";
 const ImageDropzone = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [uploadImage, setUploadImage] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isImageConfirmed, setIsImageConfirmed] = useState(false);
+ 
   const session = useSession();
 
 
@@ -62,6 +65,7 @@ const ImageDropzone = () => {
     try {
       if (uploadImage) {
         setIsImageUploading(true);
+        setIsImageConfirmed(true);
 
         const buffer = await uploadImage.arrayBuffer();
         const base64String = Buffer.from(buffer).toString("base64");
@@ -75,6 +79,7 @@ const ImageDropzone = () => {
         };
 
         const imageUrl = await uploadImageToCloudFare(imageData);
+        setIsImageUploaded(true);
         await updateUserImageInDb(userId!, imageUrl);
 
         await session.update({
@@ -124,7 +129,7 @@ const ImageDropzone = () => {
         {/*Preview image */}
         {imagePreviewUrl ? (
           <>
-            <div className="relative mb-3 size-40">
+            <div className="relative mb-3 h-40 w-40">
               <Image
                 src={imagePreviewUrl}
                 alt="Preview"
@@ -169,25 +174,25 @@ const ImageDropzone = () => {
       {/* Confirm / Cancel Buttons */}
       {imagePreviewUrl && (
         <div className="flex justify-end gap-4">
-          <button
+          {!isImageConfirmed && <button
             onClick={handleImageCancel}
             className="rounded-md border border-gray-400 px-4 py-2 text-gray-700 transition hover:bg-gray-200"
           >
             Cancel
-          </button>
-          <button
+          </button>}
+          {!isImageUploaded && <button
             onClick={handleImageConfirmation}
             className="rounded-md bg-black px-4 py-2 text-white transition hover:bg-gray-900"
           >
             {isImageUploading ? (
               <div className="flex items-center gap-3">
                 Updating image
-                <div className="size-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
               </div>
             ) : (
               "Confirm"
             )}
-          </button>
+          </button>}
         </div>
       )}
     </>

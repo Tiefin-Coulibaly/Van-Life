@@ -5,6 +5,7 @@ import { saltAndHashPassword } from "./authActions";
 import { IUpdateProfile } from "@/types/profileUpdate";
 import axios from "axios";
 import { v2 as cloudinary } from "cloudinary";
+import { revalidatePath } from "next/cache";
 
 const formatUserName = (userName: string): string => {
   let nameArray: string[] = userName.split(" ");
@@ -50,8 +51,9 @@ export const updateUserProfileInformation = async (
     where: { id: userId },
     data: { ...formattedUserInformation },
   });
-
+   revalidatePath("/");
   prisma.$disconnect();
+ 
 };
 
 export const uploadImageToCloudFare = async (imageData: {
