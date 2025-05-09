@@ -1,8 +1,6 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
-import { UserDataProvider } from "@/components/context/userDataContext";
-
 
 const Provider = ({
   children,
@@ -11,13 +9,7 @@ const Provider = ({
   children: React.ReactNode;
   session?: any;
 }) => {
-  return (
-    <SessionProvider session={session}>
-     
-    <UserDataProvider>{children}</UserDataProvider>
-     
-    </SessionProvider>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 };
 
 export default Provider;

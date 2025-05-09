@@ -8,9 +8,10 @@ import clsx from "clsx";
 import { Payment } from "@prisma/client";
 import { useUserData } from "@/components/context/userDataContext";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
+import { PaymentWithBooking } from "@/types/user";
 
-const PaymentsTable: React.FC = () => {
-  const { payments, isLoading } = useUserData();
+const PaymentsTable = ({payments}:{payments:PaymentWithBooking[]}) => {
+
 
   const getPaymentStatus = (
     payment: Payment,
@@ -50,16 +51,7 @@ const PaymentsTable: React.FC = () => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-2 text-gray-600">Loading payments...</p>
-        </div>
-      </div>
-    );
-  }
+
 
   if (!payments || payments.length === 0) {
     return (

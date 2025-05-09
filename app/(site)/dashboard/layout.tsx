@@ -2,7 +2,8 @@
 
 import DesktopLayout from "@/components/dashboard/DesktopLayout";
 import MobileAndTabletLayout from "@/components/dashboard/MobileAndTabletLayout";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
+import { use, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

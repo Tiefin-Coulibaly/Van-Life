@@ -17,11 +17,14 @@ import RecentBookings from "@/components/dashboard/overview/recentBookings/Recen
 import RecentReviews from "@/components/dashboard/overview/recentReviews/RecentReviews";
 
 const OverviewSection = async () => {
+
   const session = await auth();
+ 
 
   if (!session || !session.user) {
     redirect("/auth/signin");
   }
+
 
   
   

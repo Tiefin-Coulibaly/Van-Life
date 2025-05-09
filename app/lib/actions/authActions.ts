@@ -173,6 +173,5 @@ export const updateGoogleAuthNewUserData = async (
 
 // Handle user sign out
 export const signUserOUt = async () => {
-  await signOut({ redirectTo: "/auth/signin" });
-  revalidatePath("/");
+  await signOut({redirectTo: "/auth/signin"});
 };

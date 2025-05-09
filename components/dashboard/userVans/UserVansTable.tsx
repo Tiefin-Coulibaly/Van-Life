@@ -4,9 +4,10 @@ import Image from "next/image";
 import { Review } from "@prisma/client";
 import { useUserData } from "@/components/context/userDataContext";
 import { StarIcon } from "@heroicons/react/24/outline";
+import { VanWithReviews } from "@/types/user";
 
-const UserVansTable: React.FC = () => {
-  const { vans, isLoading } = useUserData();
+const UserVansTable= ({vans}:{vans:VanWithReviews[]}) => {
+ 
   const calculateAverageRating = (reviews: Review[]): number => {
     if (!reviews || reviews.length === 0) return 0;
     const ratings = reviews.map((review) => review.rating);
@@ -14,16 +15,6 @@ const UserVansTable: React.FC = () => {
     return parseFloat((total / ratings.length).toFixed(1));
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-2 text-gray-600">Loading vans...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!vans || vans.length === 0) {
     return (
