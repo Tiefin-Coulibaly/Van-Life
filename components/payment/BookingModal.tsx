@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { FaTimes, FaCalendar } from 'react-icons/fa';
-import { format } from 'date-fns';
-import { calculateTotalPrice } from '@/app/lib/utils/booking';
-import { set } from 'mongoose';
+import { useState } from "react";
+import { FaTimes, FaCalendar } from "react-icons/fa";
+import { format } from "date-fns";
+import {
+  calculateTotalPrice,
+  formatDateForDisplay,
+} from "@/app/lib/utils/booking";
+import { set } from "mongoose";
 
 interface BookingModalProps {
   vanId: string;
@@ -19,12 +22,12 @@ interface BookingModalProps {
   endDate: string;
 }
 
-const BookingModal = ({ 
-  vanId, 
-  price, 
+const BookingModal = ({
+  vanId,
+  price,
   name,
-  isOpen, 
-  onClose, 
+  isOpen,
+  onClose,
   onBooking,
   setStartDate,
   setEndDate,
@@ -33,34 +36,34 @@ const BookingModal = ({
   startDate,
   endDate,
 }: BookingModalProps) => {
- 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const today = new Date();
   const minDate = format(today, "yyyy-MM-dd");
 
-  const {totalPrice, diffDays} = calculateTotalPrice(startDate, endDate, price);
+  const { totalPrice, diffDays } = calculateTotalPrice(
+    startDate,
+    endDate,
+    price,
+  );
   if (totalPrice > 0) {
     setTotalPrice(totalPrice);
     setDiffDays(diffDays);
   }
 
-
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    
+
     if (!startDate || !endDate) {
       setError("Please select both start and end dates");
       return;
     }
-    
-   
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    // Use our date helper to create dates safely for booking
+    const start = new Date(`${startDate}T12:00:00Z`);
+    const end = new Date(`${endDate}T12:00:00Z`);
 
     if (end <= start) {
       setError("End date must be after start date");
@@ -68,7 +71,7 @@ const BookingModal = ({
     }
 
     setIsLoading(true);
-    
+
     try {
       onBooking(start, end);
     } catch (err: any) {
@@ -81,27 +84,27 @@ const BookingModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-2000 flex items-center justify-center bg-black bg-opacity-50 p-4 z-99999">
+    <div className="z-2000 fixed inset-0 z-99999 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">Book Your Van</h2>
-          <button 
+          <button
             onClick={onClose}
             className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           >
             <FaTimes size={20} />
           </button>
         </div>
-        
+
         <div className="mt-4">
           <h3 className="font-medium text-gray-700">{name}</h3>
           <p className="text-gray-600">${price} per day</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label 
-              htmlFor="startDate" 
+            <label
+              htmlFor="startDate"
               className="block text-sm font-medium text-gray-700"
             >
               Start Date
@@ -120,10 +123,10 @@ const BookingModal = ({
               />
             </div>
           </div>
-          
+
           <div>
-            <label 
-              htmlFor="endDate" 
+            <label
+              htmlFor="endDate"
               className="block text-sm font-medium text-gray-700"
             >
               End Date
@@ -149,7 +152,7 @@ const BookingModal = ({
               {error}
             </div>
           )}
-          
+
           {startDate && endDate && (
             <div className="rounded-md bg-gray-50 p-3">
               <div className="flex justify-between">
@@ -157,11 +160,13 @@ const BookingModal = ({
                 <span className="font-bold">${totalPrice.toFixed(2)}</span>
               </div>
               <p className="mt-1 text-xs text-gray-500">
-                {format(new Date(startDate), "MMM dd, yyyy")} - {format(new Date(endDate), "MMM dd, yyyy")}
+                {/* Use our consistent date formatting helper */}
+                {formatDateForDisplay(startDate)} -{" "}
+                {formatDateForDisplay(endDate)}
               </p>
             </div>
           )}
-          
+
           <div className="flex justify-end space-x-3">
             <button
               type="button"
@@ -174,11 +179,13 @@ const BookingModal = ({
               type="submit"
               disabled={isLoading || !startDate || !endDate}
               className={`rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 
-                ${isLoading || !startDate || !endDate 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-black hover:bg-gray-800'}`}
+                ${
+                  isLoading || !startDate || !endDate
+                    ? "cursor-not-allowed bg-gray-400"
+                    : "bg-black hover:bg-gray-800"
+                }`}
             >
-              {isLoading ? 'Processing...' : 'Book Now'}
+              {isLoading ? "Processing..." : "Book Now"}
             </button>
           </div>
         </form>
