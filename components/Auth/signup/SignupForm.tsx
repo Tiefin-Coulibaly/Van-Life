@@ -8,44 +8,26 @@ import { UserRegistration } from "@/types/userRegistrationForm";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
-
-
-/**
- * SignupForm Component
- *
- * This component renders a signup form with validation using React Hook Form.
- * It includes fields for first name, last name, email, password, phone, and role selection.
- *
- * @returns {JSX.Element} The signup form component.
- */
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const SignupForm = (): React.ReactElement => {
-  // Initialize the form with React Hook Form
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<UserRegistration>();
 
-  // Loading state to manage form submission
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  /**
-   * Handles form submission
-   *
-   * @param {UserRegistration} data - The user input data
-   */
   const onSubmit = async (data: UserRegistration) => {
     setLoading(true);
 
-    // Call the API to create a new user
     const response: { success: boolean; message: string } =
-      await createUser(data as any);
+      await createUser(data);
     setLoading(false);
 
-    // Show success or error message based on the API response
     if (response.success) {
       toast.success(response.message);
       router.push("/auth/signin");
@@ -163,26 +145,6 @@ const SignupForm = (): React.ReactElement => {
             <p className="text-sm text-red-500">{errors.phone.message}</p>
           )}
         </div>
-
-        {/* Role Selection */}
-        <div className="flex w-full flex-col gap-1 lg:w-1/2">
-          <select
-            {...register("role", { required: "A role is required" })}
-            className={`w-full border-b border-stroke p-2 pb-3.5 focus:border-waterloo focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee ${
-              errors.role ? "bg-red-100" : "bg-transparent"
-            }`}
-          >
-            <option className="hidden" value="">
-              Select a role
-            </option>
-            <option value="Renter">Renter</option>
-            <option value="Owner">Owner</option>
-            <option value="Admin">Admin</option>
-          </select>
-          {errors.role && (
-            <p className="text-sm text-red-500">{errors.role.message}</p>
-          )}
-        </div>
       </div>
 
       {/* Submit Button */}
@@ -217,3 +179,6 @@ const SignupForm = (): React.ReactElement => {
 };
 
 export default SignupForm;
+function useEffect(arg0: () => void, arg1: AppRouterInstance[]) {
+  throw new Error("Function not implemented.");
+}

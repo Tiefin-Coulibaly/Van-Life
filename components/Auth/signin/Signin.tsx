@@ -1,31 +1,35 @@
 "use client";
 
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import SignInForm from "./SignInForm";
 import GoogleSignIn from "./GoogleSignIn";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { googleErrorMessage } from "@/app/lib/utils/googleErrorMessage";
 import { useLoginContext } from "@/components/context/loginContext";
+import AnimationWrapper from "@/components/animationWrapper/AnimationWrapper";
 
 const Signin = () => {
- const { setIsLoggedIn } = useLoginContext();
+  const router = useRouter();
+  const { setIsLoggedIn } = useLoginContext();
   const [signInError, setSignInError] = useState<string>("");
 
- 
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl");
   const errorType = params.get("error");
 
+  // Force a refresh when component mounts to ensure animations play
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
 
+  // Handle authentication errors from Google
   useEffect(() => {
     if (errorType) {
       setSignInError(googleErrorMessage(errorType as string));
       setIsLoggedIn(false);
     }
-  }, [errorType]);
+  }, [errorType, setIsLoggedIn]);
 
   return (
     <>
@@ -49,17 +53,10 @@ const Signin = () => {
             />
           </div>
 
-          {/* Animated form card with entry animation */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: -20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            transition={{ duration: 1, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="animate_top rounded-lg bg-white px-7.5 pt-7.5 shadow-solid-8 dark:border dark:border-strokedark dark:bg-black xl:px-15 xl:pt-15"
+          {/* Animated form card using AnimationWrapper */}
+          <AnimationWrapper
+            className="rounded-lg bg-white px-7.5 pt-7.5 shadow-solid-8 dark:border dark:border-strokedark dark:bg-black xl:px-15 xl:pt-15"
+            delay={0.1}
           >
             <h2 className="mb-15 text-center text-3xl font-semibold text-black dark:text-white xl:text-sectiontitle2">
               Login to Your Account
@@ -86,7 +83,7 @@ const Signin = () => {
 
             {/* Email/password authentication form */}
             <SignInForm callbackUrl={callbackUrl} />
-          </motion.div>
+          </AnimationWrapper>
         </div>
       </section>
     </>

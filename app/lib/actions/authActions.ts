@@ -16,6 +16,7 @@ export const createUser = async (
   userData: Prisma.UserCreateInput,
 ): Promise<{ success: boolean; message: string }> => {
   try {
+    console.log("User data:", userData);
     // verify is the user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: userData.email },
