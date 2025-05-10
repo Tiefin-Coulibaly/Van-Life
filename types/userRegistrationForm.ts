@@ -1,3 +1,9 @@
-import { IUser } from "./user";
 
-export type UserRegistration = Omit<IUser, keyof Document>
+
+export interface UserRegistration {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phone?: string;
+}

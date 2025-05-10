@@ -1,17 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import GoogleAndGithubSignup from "./GoogleAndGithubSignup";
 import SignupForm from "./SignupForm";
 import GoogleSignIn from "../signin/GoogleSignIn";
+import AnimationWrapper from "@/components/animationWrapper/AnimationWrapper";
+import { useRouter } from "next/navigation";
 
-/**
- * Signup Component
- * This component renders a user registration form with options for signing up
- * via Google, GitHub, or email. The form is visually enhanced with animations
- * and gradient backgrounds for a polished UI/UX experience.
- */
 const Signup = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
+  
   return (
     <>
       {/* ===== Signup Form Section Start ===== */}
@@ -36,17 +37,10 @@ const Signup = () => {
             />
           </div>
 
-          {/* Motion wrapper for fade-in animation effect */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: -20 }, // Initial state: hidden & moved up
-              visible: { opacity: 1, y: 0 }, // Final state: fully visible
-            }}
-            initial="hidden"
-            whileInView="visible"
-            transition={{ duration: 1, delay: 0.1 }} // Smooth transition settings
-            viewport={{ once: true }} // Ensures animation runs only once per page visit
-            className="animate_top rounded-lg bg-white px-7.5 pt-7.5 shadow-solid-8 dark:border dark:border-strokedark dark:bg-black xl:px-15 xl:pt-15"
+          {/* AnimationWrapper for fade-in animation effect */}
+          <AnimationWrapper
+            className="rounded-lg bg-white px-7.5 pt-7.5 shadow-solid-8 dark:border dark:border-strokedark dark:bg-black xl:px-15 xl:pt-15"
+            delay={0.1}
           >
             {/* Signup Form Heading */}
             <h2 className="mb-15 text-center text-3xl font-semibold text-black dark:text-white xl:text-sectiontitle2">
@@ -67,7 +61,7 @@ const Signup = () => {
 
             {/* Email/Password Signup Form */}
             <SignupForm />
-          </motion.div>
+          </AnimationWrapper>
         </div>
       </section>
       {/* ===== Signup Form Section End ===== */}

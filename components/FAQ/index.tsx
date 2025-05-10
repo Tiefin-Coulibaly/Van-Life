@@ -1,11 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
 import FAQItem from "./FAQItem";
 import faqData from "./faqData";
+import AnimationWrapper from "@/components/animationWrapper/AnimationWrapper";
+import { useRouter } from "next/navigation";
 
 const FAQ = () => {
+   const router = useRouter();
+  
+    useEffect(() => {
+      router.refresh();
+    }, [router]);
+
   const [activeFaq, setActiveFaq] = useState(1);
 
   const handleFaqToggle = (id: number) => {
@@ -32,24 +39,8 @@ const FAQ = () => {
             />
           </div>
           <div className="flex flex-wrap gap-8 md:flex-nowrap md:items-center xl:gap-32.5">
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="animate_left md:w-2/5 lg:w-1/2"
-            >
+            {/* Left side title section */}
+            <AnimationWrapper className="md:w-2/5 lg:w-1/2" delay={0.1}>
               <span className="font-medium uppercase text-black dark:text-white">
                 OUR FAQS
               </span>
@@ -59,44 +50,10 @@ const FAQ = () => {
                   Questions
                 </span>
               </h2>
+            </AnimationWrapper>
 
-              <a
-                href="#"
-                className="group mt-7.5 inline-flex items-center gap-2.5 text-black hover:text-primary dark:text-white dark:hover:text-primary"
-              >
-                <span className="duration-300 group-hover:pr-2">Know More</span>
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.4767 6.16701L6.00668 1.69701L7.18501 0.518677L13.6667 7.00034L7.18501 13.482L6.00668 12.3037L10.4767 7.83368H0.333344V6.16701H10.4767Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </a>
-            </motion.div>
-
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: 20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="animate_right md:w-3/5 lg:w-1/2"
-            >
+            {/* Right side FAQ accordion */}
+            <AnimationWrapper className="md:w-3/5 lg:w-1/2" delay={0.1}>
               <div className="rounded-lg bg-white shadow-solid-8 dark:border dark:border-strokedark dark:bg-blacksection">
                 {faqData.map((faq, key) => (
                   <FAQItem
@@ -105,7 +62,7 @@ const FAQ = () => {
                   />
                 ))}
               </div>
-            </motion.div>
+            </AnimationWrapper>
           </div>
         </div>
       </section>
