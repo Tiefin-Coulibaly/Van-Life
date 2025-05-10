@@ -98,7 +98,7 @@ model Van {
   insuranceIncluded Boolean?
   payments          Payment[]
   userId            String?   @db.ObjectId
-  user              User?     @relation(fields: [userId], references: [id])
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -110,7 +110,7 @@ model Booking {
   vanId           String        @db.ObjectId
   van             Van           @relation(fields: [vanId], references: [id])
   userId          String        @db.ObjectId
-  user            User          @relation(fields: [userId], references: [id])
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   startDate       DateTime
   endDate         DateTime
   status          BookingStatus @default(Pending)
@@ -128,7 +128,7 @@ model Review {
   vanId     String   @db.ObjectId
   van       Van      @relation(fields: [vanId], references: [id])
   userId    String   @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   comment   String?
   rating    Float
   createdAt DateTime @default(now())
@@ -142,7 +142,7 @@ model Payment {
   bookingId       String        @unique @db.ObjectId
   booking         Booking       @relation(fields: [bookingId], references: [id])
   userId          String        @db.ObjectId
-  user            User          @relation(fields: [userId], references: [id])
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   vanId           String        @db.ObjectId
   van             Van           @relation(fields: [vanId], references: [id])
   stripePaymentId String?
@@ -157,7 +157,7 @@ model Payment {
 model Notification {
   id        String            @id @default(auto()) @map("_id") @db.ObjectId
   userId    String            @db.ObjectId
-  user      User              @relation(fields: [userId], references: [id])
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   type      NotificationType?
   title     String?
   message   String?

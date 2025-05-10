@@ -16,7 +16,7 @@ const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
   const searchParams = await props.searchParams;
 
   return (
-    <main className="pb-20 pt-50">
+    <main className="pb-20 pt-40 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
       <ToastContainer
         position="top-center"
         autoClose={3000}

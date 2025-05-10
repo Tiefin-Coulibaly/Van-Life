@@ -12,7 +12,7 @@ const AboutUs = () => {
     router.refresh();
   }, []);
   return (
-    <section className="overflow-hidden pb-20 pt-35 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
+    <section className="overflow-hidden pb-20 pt-40 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
       {/* Hero Section */}
       <div className="relative mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
         <div className="relative z-1 md:flex md:items-center md:justify-between md:gap-10">
@@ -143,13 +143,11 @@ const AboutUs = () => {
       <div className="mx-auto mt-20 max-w-c-1390 px-4 md:px-8 2xl:px-0">
         <div className="flex flex-col-reverse items-center gap-8 md:flex-row md:justify-between">
           <AnimationWrapper className="md:w-1/2" delay={0.1}>
-            <div className="relative h-[350px] w-full md:h-[440px]">
-              <Image
-                src="/images/about/travellers.jpg" 
+            <div className="relative h-[280px] w-full sm:h-[320px] md:h-[440px]">
+              <img
+                src="/images/about/travellers.jpg"
                 alt="Our story"
-                fill
-                className="rounded-lg object-cover"
-                quality={100}
+                className="h-full w-full rounded-lg object-cover"
               />
             </div>
           </AnimationWrapper>
@@ -166,8 +164,8 @@ const AboutUs = () => {
             </p>
             <p className="text-body-color mb-8 text-base">
               We started with just three vans and a passion for the open road.
-              Today, we've grown into a community of over 500 vans across
-              the country and abroad.
+              Today, we've grown into a community of over 500 vans across the
+              country and abroad.
             </p>
             <p className="text-body-color text-base">
               Our mission remains simple: provide exceptional vans and excellent
@@ -194,7 +192,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/about/ceo.jpg" 
+                  src="/images/about/ceo.jpg"
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -232,7 +230,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/about/manager.jpg" 
+                  src="/images/about/manager.jpg"
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"

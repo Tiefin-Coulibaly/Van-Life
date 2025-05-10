@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const SupportPage = () => {
   return (
-    <div className="pb-20 pt-50">
+    <div className="pb-20 pt-40 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
       <Contact />
     </div>
   );
