@@ -1,19 +1,20 @@
 import UserVans from "@/components/dashboard/userVans/UserVans";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { fetchUserData } from "@/app/lib/actions/dashboardActions";
 
 const page = async () => {
-    // get the session
+
     const session = await auth();
   
-    // protect the route by redirecting the user to the 
-    // log in page
     if (!session || !session.user) {
       redirect("/auth/signin?callbackUrl=/vans")
     }
 
+    const userData = await fetchUserData(session.user.id as string);
+
   return (
-    <UserVans/>
+    <UserVans vans={userData?.vansRented || []}/>
   )
 }
 

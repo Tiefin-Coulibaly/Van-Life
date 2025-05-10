@@ -9,6 +9,7 @@ import { User } from "@prisma/client";
 import { ISignIn } from "@/types/signIn";
 import { redirect } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { revalidatePath } from "next/cache";
 
 // Create  a new user
 export const createUser = async (
@@ -53,7 +54,7 @@ export const createUser = async (
         userId: newUser.id,
         type: "credentials",
         provider: "credentials",
-        providerAccountId: uuidv4(), 
+        providerAccountId: uuidv4(),
       },
     });
 
@@ -137,8 +138,7 @@ export const signUserInWithCredentials = async (formData: ISignIn) => {
       password: formData.password,
       redirect: false,
     });
-
-    // If successful, redirect manually
+    revalidatePath("/", "layout");
     return { success: true, redirectTo: "/dashboard" };
   } catch (error) {
     console.error("Credentials Authentication error:", error.type);
@@ -158,6 +158,7 @@ export const signUserInWithCredentials = async (formData: ISignIn) => {
 // handle user sign in with google
 export const signUserInWithGoogle = async () => {
   await signIn("google", { redirectTo: "/dashboard" });
+  revalidatePath("/", "layout");
 };
 
 // Update the user information after signin up with google
@@ -172,5 +173,6 @@ export const updateGoogleAuthNewUserData = async (
 
 // Handle user sign out
 export const signUserOUt = async () => {
-  await signOut({ redirectTo: "/auth/signin" });
+  await signOut({ redirect: false });
+  revalidatePath("/", "layout");
 };

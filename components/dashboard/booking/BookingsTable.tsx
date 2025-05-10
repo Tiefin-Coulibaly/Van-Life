@@ -11,9 +11,13 @@ import {  useEffect } from "react";
 import { BookingStatus } from "@prisma/client";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
 import { useUserData } from "@/components/context/userDataContext";
+import { BookingWithVan } from "@/types/bookingTypes";
 
-const BookingsTable = () => {
-  const { bookings, isLoading } = useUserData();
+
+const BookingsTable = ({bookings}:{bookings:BookingWithVan[]}) => {
+
+
+
 
   useEffect(() => {
     if (bookings?.length > 0) {
@@ -49,16 +53,6 @@ const BookingsTable = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-2 text-gray-600">Loading bookings...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!bookings || bookings.length === 0) {
     return (

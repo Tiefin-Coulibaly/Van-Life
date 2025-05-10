@@ -2,17 +2,13 @@
 "use client";
 
 import React from "react";
-import { useUserData } from "@/components/context/userDataContext";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { Notification } from "@prisma/client";
+import { markAllNotificationsAsRead, markNotificationAsRead } from "@/app/lib/actions/dashboardActions";
 
-const Notifications: React.FC = (): React.ReactElement => {
-  const {
-    notifications,
-    isLoading,
-    markAllNotificationsAsRead,
-    markNotificationAsRead,
-  } = useUserData();
+const Notifications = ({notifications}:{notifications:Notification[]}) => {
+
 
   const filteredNotifications = React.useMemo(() => {
     if (!notifications) return [];
@@ -28,18 +24,6 @@ const Notifications: React.FC = (): React.ReactElement => {
     );
   }, [filteredNotifications]);
 
-  if (isLoading) {
-    return (
-      <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-xl font-semibold text-gray-900">
-          Booking Notifications
-        </h2>
-        <div className="flex justify-center py-8">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="mb-6 rounded-lg bg-white p-6 shadow-md">
@@ -57,9 +41,9 @@ const Notifications: React.FC = (): React.ReactElement => {
                   ? "text-gray-600"
                   : "font-medium text-gray-800"
               }`}
-              onClick={() => {
+              onClick={async () => {
                 if (!notification.read) {
-                  markNotificationAsRead(notification.id);
+                  await markNotificationAsRead(notification.id);
                 }
               }}
             >
@@ -106,7 +90,7 @@ const Notifications: React.FC = (): React.ReactElement => {
         <div className="mt-4 flex justify-end">
           <button
             className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-            onClick={markAllNotificationsAsRead}
+            onClick={async () => await markAllNotificationsAsRead()}
           >
             Mark all as read
           </button>

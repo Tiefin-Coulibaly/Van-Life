@@ -3,14 +3,43 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import ThemeToggler from "./ThemeToggler";
+import { useSession } from "next-auth/react";
 import menuData from "./menuData";
+import { signUserOUt } from "@/app/lib/actions/authActions";
+import { useRouter } from "next/navigation";
+import { useLoginContext } from "@/components/context/loginContext";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [dropdownToggler, setDropdownToggler] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [isMenuAnimating, setIsMenuAnimating] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useLoginContext();
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  // Coordinated menu toggle with animation timing
+  const toggleNavigation = () => {
+    if (navigationOpen) {
+      // First mark as animating (keeps in DOM during animation)
+      setIsMenuAnimating(true);
+      // Then toggle the actual state
+      setNavigationOpen(false);
+      // After animation completes, update animating state
+      setTimeout(() => {
+        setIsMenuAnimating(false);
+      }, 300); // Match your CSS transition duration
+    } else {
+      setNavigationOpen(true);
+      setIsMenuAnimating(true);
+    }
+  };
+
+  useEffect(() => {
+    router.refresh();
+  }, [isLoggedIn]);
 
   const pathUrl = usePathname();
 
@@ -23,13 +52,30 @@ const Header = () => {
     }
   };
 
+  // Handle signout
+  const handleSignOut = async () => {
+    setUserDropdown(false);
+    await signUserOUt();
+    setIsLoggedIn(false);
+    router.push("/auth/signin");
+  };
+
+  const handleMenuItemClick = () => {
+    if (navigationOpen) {
+      toggleNavigation(); // Use the coordinated toggle function
+    }
+  };
+
   useEffect(() => {
     window.addEventListener("scroll", handleStickyMenu);
-  });
+    return () => {
+      window.removeEventListener("scroll", handleStickyMenu);
+    };
+  }, []);
 
   return (
     <header
-      className={`fixed inset-x-0 mx-auto top-0 z-99999  py-7  container  ${
+      className={`container fixed inset-x-0 top-0 z-99999  mx-auto  py-7  ${
         stickyMenu
           ? "bg-white  !py-4  transition duration-100 dark:bg-black"
           : ""
@@ -38,27 +84,21 @@ const Header = () => {
       <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0">
         <div className="flex w-full items-center justify-between xl:w-1/4">
           <a href="/">
-            <Image
-              src="/images/logo/logo-dark.svg"
-              alt="logo"
-              width={119.03}
-              height={30}
-              className="hidden w-full dark:block"
-            />
-            <Image
-              src="/images/logo/logo-light.svg"
-              alt="logo"
-              width={119.03}
-              height={30}
-              className="w-full dark:hidden"
-            />
+            <div className="relative h-24 w-24 lg:h-28 lg:w-28">
+              <Image
+                src="/images/logo/company-logo_svg.png"
+                alt="logo"
+                fill
+                className="w-full "
+              />
+            </div>
           </a>
 
           {/* <!-- Hamburger Toggle BTN --> */}
           <button
             aria-label="hamburger Toggler"
             className="block xl:hidden"
-            onClick={() => setNavigationOpen(!navigationOpen)}
+            onClick={toggleNavigation} // Use coordinated function
           >
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
               <span className="absolute right-0 block h-full w-full">
@@ -92,18 +132,26 @@ const Header = () => {
               </span>
             </span>
           </button>
-          {/* <!-- Hamburger Toggle BTN --> */}
         </div>
 
-        {/* Nav Menu Start   */}
+        {/* Nav Menu Start */}
         <div
-          className={`invisible h-0 w-full items-center justify-between xl:visible xl:flex xl:h-auto xl:w-full ${
-            navigationOpen &&
-            "navbar !visible mt-4 h-auto max-h-[400px] rounded-md bg-white p-7.5 shadow-solid-5 dark:bg-blacksection xl:h-auto xl:p-0 xl:shadow-none xl:dark:bg-transparent"
-          }`}
+          className={`xl:visible xl:flex xl:h-auto xl:w-full
+            ${
+              navigationOpen || isMenuAnimating
+                ? "navbar visible transition-all duration-300 ease-in-out"
+                : "invisible h-0"
+            }
+            ${
+              navigationOpen
+                ? "mt-4 h-auto max-h-[400px] rounded-md bg-white p-7.5 opacity-100 shadow-solid-5 dark:bg-blacksection"
+                : "max-h-0 opacity-0"
+            }
+            xl:h-auto xl:max-h-full xl:p-0 xl:opacity-100 xl:shadow-none xl:dark:bg-transparent`}
         >
-          <nav>
-            <ul className="flex flex-col gap-5 xl:flex-row xl:items-center xl:gap-10">
+          {/* Center the navigation menu */}
+          <nav className="xl:flex xl:flex-1 xl:justify-center">
+            <ul className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-center xl:gap-10">
               {menuData.map((menuItem, key) => (
                 <li key={key} className={menuItem.submenu && "group relative"}>
                   {menuItem.submenu ? (
@@ -129,7 +177,12 @@ const Header = () => {
                       >
                         {menuItem.submenu.map((item, key) => (
                           <li key={key} className="hover:text-primary">
-                            <Link href={item.path || "#"}>{item.title}</Link>
+                            <Link
+                              href={item.path || "#"}
+                              onClick={handleMenuItemClick} // Close mobile menu on link click
+                            >
+                              {item.title}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -142,6 +195,7 @@ const Header = () => {
                           ? "text-primary hover:text-primary"
                           : "hover:text-primary"
                       }
+                      onClick={handleMenuItemClick}
                     >
                       {menuItem.title}
                     </Link>
@@ -152,28 +206,105 @@ const Header = () => {
           </nav>
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
-            <ThemeToggler />
+            {isLoggedIn ? (
+              // User is signed in - show profile
+              <div className="relative">
+                <button
+                  onClick={() => setUserDropdown(!userDropdown)}
+                  className="flex items-center gap-2 rounded-lg hover:text-primary"
+                >
+                  <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary">
+                    {session?.user?.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <UserCircleIcon className="h-full w-full text-gray-400" />
+                    )}
+                  </div>
+                  <span className="hidden text-sm font-medium md:block">
+                    {session?.user?.name || "User"}
+                  </span>
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
 
-            <Link
-              href="https://github.com/NextJSTemplates/solid-nextjs"
-              className="text-regular font-medium text-waterloo hover:text-primary"
-            >
-              GitHub Repo 🌟
-            </Link>
+                {/* User dropdown menu */}
+                {userDropdown && (
+                  <div className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-blacksection">
+                    <Link
+                      href="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                      onClick={() => {
+                        setUserDropdown(false);
+                        handleMenuItemClick(); // Close mobile menu too
+                      }}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/dashboard/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                      onClick={() => {
+                        setUserDropdown(false);
+                        handleMenuItemClick(); // Close mobile menu too
+                      }}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        handleMenuItemClick(); // Close mobile menu too
+                      }}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // User is not signed in - show sign in/up buttons
+              <div className="flex items-center gap-6">
+                <Link
+                  href="/auth/signin"
+                  onClick={handleMenuItemClick}
+                  className="text-regular font-medium text-waterloo hover:text-primary"
+                >
+                  Sign In
+                </Link>
 
-            <Link
-              href="https://nextjstemplates.com/templates/solid"
-              className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
-            >
-              Get Pro 🔥
-            </Link>
+                <Link
+                  href="/auth/signup"
+                  onClick={handleMenuItemClick}
+                  className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </header>
   );
 };
-
-// w-full delay-300
 
 export default Header;

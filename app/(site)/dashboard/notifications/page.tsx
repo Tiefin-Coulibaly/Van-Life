@@ -2,17 +2,18 @@ import React from "react";
 import Notifications from "@/components/dashboard/notifications/Notifications";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { fetchUserData } from "@/app/lib/actions/dashboardActions";
 
 const page = async () => {
-  // get the session
+ 
   const session = await auth();
 
-  // protect the route by redirecting the user to the
-  // log in page
   if (!session || !session.user) {
     redirect("/auth/signin?callbackUrl=/notifications");
   }
-  return <Notifications />;
+
+  const userData = await fetchUserData(session?.user?.id);
+  return <Notifications notifications={userData?.notifications || []}/>;
 };
 
 export default page;

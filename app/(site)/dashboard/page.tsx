@@ -17,12 +17,16 @@ import RecentBookings from "@/components/dashboard/overview/recentBookings/Recen
 import RecentReviews from "@/components/dashboard/overview/recentReviews/RecentReviews";
 
 const OverviewSection = async () => {
+
   const session = await auth();
+ 
 
   if (!session || !session.user) {
     redirect("/auth/signin");
   }
 
+
+  
   
   const userData = await userStats(session.user.id as string);
   const bookingStats = calculateBookingStats(userData?.bookings as Booking[]);

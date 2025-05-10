@@ -224,8 +224,13 @@ export const fetchBookings = async (
 };
 
 export const fetchUserData = async (
-  userId: string,
+  userId: string | null | undefined,
 ): Promise<FetchUserDataResult> => {
+  if (!userId) {
+    console.error("User ID is null or undefined");
+    return null
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -309,3 +314,30 @@ export const determineHowManyDaysAgo = (date: Date): number => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 };
+
+  export const markAllNotificationsAsRead = async () => {
+    try {
+      const response = await fetch("/api/notifications/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
+  export const markNotificationAsRead = async (notificationId: string) => {
+    try {
+      const response = await fetch("/api/notifications/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
+      });
+    } catch (error) {
+      console.error(
+        `Error marking notification ${notificationId} as read:`,
+        error,
+      );
+    }
+  };
