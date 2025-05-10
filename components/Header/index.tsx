@@ -20,17 +20,17 @@ const Header = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Coordinated menu toggle with animation timing
+
   const toggleNavigation = () => {
     if (navigationOpen) {
-      // First mark as animating (keeps in DOM during animation)
+    
       setIsMenuAnimating(true);
-      // Then toggle the actual state
+    
       setNavigationOpen(false);
-      // After animation completes, update animating state
+   
       setTimeout(() => {
         setIsMenuAnimating(false);
-      }, 300); // Match your CSS transition duration
+      }, 300); 
     } else {
       setNavigationOpen(true);
       setIsMenuAnimating(true);
@@ -43,7 +43,7 @@ const Header = () => {
 
   const pathUrl = usePathname();
 
-  // Sticky menu
+
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
       setStickyMenu(true);
@@ -52,7 +52,7 @@ const Header = () => {
     }
   };
 
-  // Handle signout
+
   const handleSignOut = async () => {
     setUserDropdown(false);
     await signUserOUt();
@@ -62,7 +62,7 @@ const Header = () => {
 
   const handleMenuItemClick = () => {
     if (navigationOpen) {
-      toggleNavigation(); // Use the coordinated toggle function
+      toggleNavigation();
     }
   };
 
@@ -75,7 +75,7 @@ const Header = () => {
 
   return (
     <header
-      className={`container fixed inset-x-0 top-0 z-99999  mx-auto  py-7  ${
+      className={`container fixed inset-x-0 top-0 z-999  mx-auto  py-7  ${
         stickyMenu
           ? "bg-white  !py-4  transition duration-100 dark:bg-black"
           : ""
@@ -98,7 +98,7 @@ const Header = () => {
           <button
             aria-label="hamburger Toggler"
             className="block xl:hidden"
-            onClick={toggleNavigation} // Use coordinated function
+            onClick={toggleNavigation} 
           >
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
               <span className="absolute right-0 block h-full w-full">

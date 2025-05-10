@@ -111,6 +111,7 @@ module.exports = withMT({
         99999: "99999",
         999: "999",
         1: "1",
+        toast: "9999999",
       },
       opacity: {
         65: ".65",
@@ -143,6 +144,6 @@ module.exports = withMT({
         line3: "line 9s linear infinite",
       },
     },
+
   },
-  plugins: [],
 });
