@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * Sign In Page Component
- * Main authentication page that combines multiple sign-in methods
- * Handles both email/password and Google authentication
- */
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import SignInForm from "./SignInForm";
@@ -12,23 +8,22 @@ import GoogleSignIn from "./GoogleSignIn";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { googleErrorMessage } from "@/app/lib/utils/googleErrorMessage";
+import { useLoginContext } from "@/components/context/loginContext";
 
 const Signin = () => {
-  // State to handle Google authentication errors
+ const { setIsLoggedIn } = useLoginContext();
   const [signInError, setSignInError] = useState<string>("");
 
-  // Extract URL parameters for callback and error handling
+ 
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl");
   const errorType = params.get("error");
 
-  /**
-   * Process Google authentication errors from URL parameters
-   * Converts error codes to user-friendly messages
-   */
+
   useEffect(() => {
     if (errorType) {
       setSignInError(googleErrorMessage(errorType as string));
+      setIsLoggedIn(false);
     }
   }, [errorType]);
 

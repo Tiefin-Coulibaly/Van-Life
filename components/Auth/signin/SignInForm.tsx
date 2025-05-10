@@ -1,8 +1,3 @@
-/**
- * SignInForm Component
- * Handles user authentication with email and password
- * Includes form validation, error handling, and redirects
- */
 import Link from "next/link";
 import { signUserInWithCredentials } from "@/app/lib/actions/authActions";
 import { toast } from "react-toastify";
@@ -13,15 +8,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "@/app/lib/utils/zod";
 import { ISignIn } from "@/types/signIn";
+import { useLoginContext } from "@/components/context/loginContext";
 
-
-/**
- * Sign In Form with validation and authentication handling
- * @param {Object} props - Component props
- * @param {string|null} props.callbackUrl - URL to redirect to after successful login
- */
 const SignInForm = ({ callbackUrl }: { callbackUrl: string | null }) => {
-  // State management for loading and error states
+  const { setIsLoggedIn } = useLoginContext();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,23 +23,19 @@ const SignInForm = ({ callbackUrl }: { callbackUrl: string | null }) => {
   } = useForm<ISignIn>({ resolver: zodResolver(signInSchema) });
   const router = useRouter();
 
-  /**
-   * Form submission handler
-   * Authenticates user and handles redirect on success
-   * @param {ISignIn} formData - Form data containing email and password
-   */
   async function onSubmit(formData: ISignIn) {
-    setError(null); // Clear previous errors
+    setError(null);
     setIsLoading(true);
 
-    // Attempt authentication with provided credentials
     const result = await signUserInWithCredentials(formData);
 
     // Process authentication result
     if (result?.error) {
       setIsLoading(false);
       setError(result.error);
+      setIsLoggedIn(false);
     } else if (result?.success && result.redirectTo) {
+      setIsLoggedIn(true);
       toast.success("Successfully logged in");
 
       // Handle redirect with optional callback URL

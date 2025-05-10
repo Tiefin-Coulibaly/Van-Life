@@ -2,7 +2,8 @@ import React from "react";
 import clsx from "clsx";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import { signUserOUt } from "@/app/lib/actions/authActions";
-import { revalidatePath } from "next/cache";
+import { useLoginContext } from "@/components/context/loginContext";
+import { useRouter } from "next/navigation";
 
 const SignOutBtn = ({
   text,
@@ -11,10 +12,13 @@ const SignOutBtn = ({
   text: string;
   className: string;
 }) => {
+  const { setIsLoggedIn } = useLoginContext();
+  const router = useRouter();
   return (
     <form
       action={async () => {
         await signUserOUt();
+        setIsLoggedIn(false);
       }}
     >
       <button
