@@ -36,7 +36,7 @@ const AboutUs = () => {
           >
             <div className="relative h-[400px] md:right-0 md:h-[500px]">
               <Image
-                src="/images/about/about-hero-placeholder.jpg" // Replace with actual image
+                src="/images/about/about-hero.jpg"
                 alt="About Van Life"
                 fill
                 className="rounded-lg object-cover"
@@ -57,12 +57,20 @@ const AboutUs = () => {
             {/* Freedom */}
             <div className="rounded-lg bg-white p-8 shadow-solid-8 dark:border dark:border-strokedark dark:bg-blacksection">
               <div className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-                <Image
-                  src="/images/icon/icon-compass.svg" // Replace with actual icon
-                  alt="Freedom"
-                  width={32}
-                  height={32}
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-8 w-8 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+                  />
+                </svg>
               </div>
               <h3 className="mb-4 text-xl font-semibold text-black dark:text-white">
                 Freedom
@@ -76,12 +84,20 @@ const AboutUs = () => {
             {/* Community */}
             <div className="rounded-lg bg-white p-8 shadow-solid-8 dark:border dark:border-strokedark dark:bg-blacksection">
               <div className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-                <Image
-                  src="/images/icon/icon-people.svg" // Replace with actual icon
-                  alt="Community"
-                  width={32}
-                  height={32}
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-8 w-8 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+                  />
+                </svg>
               </div>
               <h3 className="mb-4 text-xl font-semibold text-black dark:text-white">
                 Community
@@ -95,12 +111,20 @@ const AboutUs = () => {
             {/* Sustainability */}
             <div className="rounded-lg bg-white p-8 shadow-solid-8 dark:border dark:border-strokedark dark:bg-blacksection">
               <div className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-                <Image
-                  src="/images/icon/icon-leaf.svg" // Replace with actual icon
-                  alt="Sustainability"
-                  width={32}
-                  height={32}
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-8 w-8 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                  />
+                </svg>
               </div>
               <h3 className="mb-4 text-xl font-semibold text-black dark:text-white">
                 Sustainability
@@ -121,7 +145,7 @@ const AboutUs = () => {
           <AnimationWrapper className="md:w-1/2" delay={0.1}>
             <div className="relative h-[350px] w-full md:h-[440px]">
               <Image
-                src="/images/about/our-story-placeholder.jpg" // Replace with actual image
+                src="/images/about/travellers.jpg" 
                 alt="Our story"
                 fill
                 className="rounded-lg object-cover"
@@ -142,9 +166,8 @@ const AboutUs = () => {
             </p>
             <p className="text-body-color mb-8 text-base">
               We started with just three vans and a passion for the open road.
-              Today, we've grown into a community of over 500 van owners across
-              the country, sharing their unique vehicles with fellow
-              adventurers.
+              Today, we've grown into a community of over 500 vans across
+              the country and abroad.
             </p>
             <p className="text-body-color text-base">
               Our mission remains simple: provide exceptional vans and excellent
@@ -171,7 +194,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/team/team-member-1-placeholder.jpg" // Replace with actual image
+                  src="/images/about/ceo.jpg" 
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -190,7 +213,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/team/team-member-2-placeholder.jpg" // Replace with actual image
+                  src="/images/about/director.jpg" // Replace with actual image
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -209,7 +232,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/team/team-member-3-placeholder.jpg" // Replace with actual image
+                  src="/images/about/manager.jpg" 
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -228,7 +251,7 @@ const AboutUs = () => {
             <div className="group">
               <div className="relative h-[320px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/team/team-member-4-placeholder.jpg" // Replace with actual image
+                  src="/images/about/cutomer-experience.jpg"
                   alt="Team Member"
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -240,29 +263,6 @@ const AboutUs = () => {
                   </h4>
                   <p className="text-sm text-gray-300">Customer Experience</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </AnimationWrapper>
-      </div>
-
-      {/* Testimonials */}
-      <div className="mx-auto mt-20 max-w-c-1390 px-4 md:px-8 2xl:px-0">
-        <AnimationWrapper delay={0.1}>
-          <div className="rounded-lg bg-alabaster p-10 dark:bg-blacksection">
-            <div className="flex items-center gap-4">
-              <span className="text-7xl font-bold text-primary">"</span>
-              <div>
-                <p className="text-body-color mb-4 text-lg italic">
-                  Van Life transformed our summer plans! We rented a beautifully
-                  equipped van and spent two unforgettable weeks exploring
-                  national parks. The team's attention to detail and customer
-                  service made all the difference.
-                </p>
-                <h4 className="text-xl font-semibold text-black dark:text-white">
-                  Michael & Jessica Carter
-                </h4>
-                <p className="text-body-color">Adventure Enthusiasts</p>
               </div>
             </div>
           </div>
