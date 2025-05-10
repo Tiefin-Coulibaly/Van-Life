@@ -10,6 +10,7 @@ import { ISignIn } from "@/types/signIn";
 import { redirect } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 // Create  a new user
 export const createUser = async (
@@ -172,8 +173,18 @@ export const updateGoogleAuthNewUserData = async (
   await prisma.$disconnect();
 };
 
-// Handle user sign out
 export const signUserOUt = async () => {
-  await signOut({ redirect: false });
+  const cookieStore = await cookies();
+
+  const allCookies = cookieStore.getAll();
+  for (const cookie of allCookies) {
+    cookieStore.set(cookie.name, "", {
+      path: "/",
+      maxAge: 0,
+    });
+  }
+  await signOut({
+    redirect: false,
+  });
   revalidatePath("/", "layout");
 };

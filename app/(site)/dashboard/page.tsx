@@ -1,39 +1,30 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { StarIcon, ClockIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import Image from "next/image";
 import {
   calculateBookingStats,
   calculateRatingStats,
   fetchBookings,
-  fetchReviewsWithVans,
   getTotalVans,
   userStats,
 } from "@/app/lib/actions/dashboardActions";
 import { Booking, Review, Van } from "@prisma/client";
 import KeyMetrics from "@/components/dashboard/overview/keyMetrics/KeyMetrics";
 import RecentBookings from "@/components/dashboard/overview/recentBookings/RecentBookings";
-import RecentReviews from "@/components/dashboard/overview/recentReviews/RecentReviews";
+import RecentPayments from "@/components/dashboard/overview/recentPayments/RecentPayment";
 
 const OverviewSection = async () => {
 
   const session = await auth();
- 
 
   if (!session || !session.user) {
     redirect("/auth/signin");
   }
-
-
-  
   
   const userData = await userStats(session.user.id as string);
   const bookingStats = calculateBookingStats(userData?.bookings as Booking[]);
   const totalVans = getTotalVans(userData?.vansRented as Van[]);
   const ratingStats = calculateRatingStats(userData?.reviews as Review[]);
   const bookingsWithVans = await fetchBookings(session.user.id as string);
-  const reviewsWithVans = await fetchReviewsWithVans(session.user.id as string);
 
 
   return (
@@ -53,7 +44,6 @@ const OverviewSection = async () => {
       <KeyMetrics
         bookingStats={bookingStats}
         vansTotal={totalVans}
-        ratingStats={ratingStats}
       />
 
       {/* Recent bookings and upcoming section */}
@@ -61,7 +51,7 @@ const OverviewSection = async () => {
 
       <div className="grid grid-cols-1">
         {/* Recent reviews or user activity */}
-        <RecentReviews reviews={reviewsWithVans}/>
+        <RecentPayments/>
       </div>
     </>
   );

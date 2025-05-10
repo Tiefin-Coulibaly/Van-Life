@@ -4,12 +4,26 @@ import { Suspense } from "react";
 import VansList from "@/components/vans/VanList";
 import VansFilter from "@/components/vans/VansFilter";
 import { ISearchParams } from "@/types/searchParams";
+import { ToastContainer } from "react-toastify";
 
 const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
   const searchParams = await props.searchParams;
 
   return (
     <main className="pb-20 pt-50">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        className="z-99999"
+      />
       <Heading1 title="Explore our van options" />
 
       <VansFilter />
@@ -27,4 +41,3 @@ const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
 };
 
 export default VansPage;
-

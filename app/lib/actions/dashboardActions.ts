@@ -341,3 +341,38 @@ export const determineHowManyDaysAgo = (date: Date): number => {
       );
     }
   };
+
+
+export const fetchRecentPayments = async (limit = 3, userId:string) => {
+  try {
+    const payments = await prisma.payment.findMany({
+      take: limit,
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        van: {
+          select: {
+            name: true,
+            images: true,
+          },
+        },
+        booking: {
+          select: {
+            startDate: true,
+            endDate: true,
+            totalAmount: true,
+          },
+        },
+      },
+    });
+    
+    return payments;
+  } catch (error) {
+    console.error("Error fetching recent payments:", error);
+    return [];
+  }
+};

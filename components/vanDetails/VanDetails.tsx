@@ -11,12 +11,10 @@ import {
 import { IVanDetailsProps } from "@/types/vanDetailsProp";
 import { Carousel } from "@material-tailwind/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { handleBooking } from "@/app/lib/actions/bookingActions";
 import BookingModal from "../payment/BookingModal";
-import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import { start } from "repl";
+import { useRouter } from "next/navigation";
 
 const VanDetails = ({
   id,
@@ -36,15 +34,13 @@ const VanDetails = ({
   const [endDate, setEndDate] = useState("");
   const [diffDays, setDiffDays] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const router = useRouter();
 
   const { data: UserSession, update } = useSession();
 
   const handleOpenModal = () => {
     if (!UserSession) {
-      toast.error("You must be signed in to book a van", {
-        position: "top-center",
-        autoClose: 2500,
-      });
+      router.push("/auth/signin");
       return;
     }
     setIsModalOpen(true);
@@ -68,7 +64,7 @@ const VanDetails = ({
       diffDays,
       totalPrice,
     );
-    
+
     if (checkoutSession) {
       window.location.href = checkoutSession.url!;
     } else {
@@ -121,8 +117,8 @@ const VanDetails = ({
               type === "Luxury"
                 ? "bg-yellow-100 text-yellow-700"
                 : type === "Rugged"
-                ? "bg-red-100 text-red-700"
-                : "bg-blue-100 text-blue-700"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-blue-100 text-blue-700"
             }`}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}

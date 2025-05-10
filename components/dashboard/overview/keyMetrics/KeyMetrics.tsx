@@ -1,11 +1,10 @@
 import BookingMetrics from "./BookingMetrics";
 import ExpensesMetrics from "./ExpensesMetrics";
-import ReviewMetrics from "./ReviewMetrics";
 import VansMetrics from "./VansMetrics";
 
-const KeyMetrics = ({ bookingStats, vansTotal, ratingStats }) => {
+const KeyMetrics = ({ bookingStats, vansTotal }) => {
   return (
-    <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
       <BookingMetrics
         totalBookings={bookingStats.totalBookings}
         bookingTrend={bookingStats.bookingTrend}
@@ -22,12 +21,6 @@ const KeyMetrics = ({ bookingStats, vansTotal, ratingStats }) => {
       />
 
       <VansMetrics vansTotal={vansTotal} />
-
-      <ReviewMetrics
-        totalReview={ratingStats.totalReviews}
-        averageRating={ratingStats.averageRating}
-        recentRating={ratingStats.recentRating}
-      />
     </div>
   );
 };

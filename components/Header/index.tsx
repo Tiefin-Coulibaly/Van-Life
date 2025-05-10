@@ -17,32 +17,30 @@ const Header = () => {
   const [userDropdown, setUserDropdown] = useState(false);
   const [isMenuAnimating, setIsMenuAnimating] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useLoginContext();
-  const { data: session } = useSession();
+
+  const { data: session, status } = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    router.refresh();
+  }, [isLoggedIn, router, session, status]);
 
   const toggleNavigation = () => {
     if (navigationOpen) {
-    
       setIsMenuAnimating(true);
-    
+
       setNavigationOpen(false);
-   
+
       setTimeout(() => {
         setIsMenuAnimating(false);
-      }, 300); 
+      }, 300);
     } else {
       setNavigationOpen(true);
       setIsMenuAnimating(true);
     }
   };
 
-  useEffect(() => {
-    router.refresh();
-  }, [isLoggedIn]);
-
   const pathUrl = usePathname();
-
 
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
@@ -51,7 +49,6 @@ const Header = () => {
       setStickyMenu(false);
     }
   };
-
 
   const handleSignOut = async () => {
     setUserDropdown(false);
@@ -78,7 +75,7 @@ const Header = () => {
       className={`container fixed inset-x-0 top-0 z-999  mx-auto  py-7  ${
         stickyMenu
           ? "bg-white  !py-4  transition duration-100 dark:bg-black"
-          : ""
+          : "bg-white"
       }`}
     >
       <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0">
@@ -98,7 +95,7 @@ const Header = () => {
           <button
             aria-label="hamburger Toggler"
             className="block xl:hidden"
-            onClick={toggleNavigation} 
+            onClick={toggleNavigation}
           >
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
               <span className="absolute right-0 block h-full w-full">
