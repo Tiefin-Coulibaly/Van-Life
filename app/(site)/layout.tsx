@@ -18,13 +18,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`dark:bg-black ${inter.className} container mx-auto flex min-h-screen flex-col px-4 md:px-8`}
       >
-        
         <Provider>
           {" "}
           <ThemeProvider
@@ -48,6 +46,7 @@ export default function RootLayout({
               draggable
               pauseOnHover
               theme="colored"
+              className="z-99999"
             />
             <Footer />
             <ScrollToTop />
