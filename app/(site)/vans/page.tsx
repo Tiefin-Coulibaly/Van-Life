@@ -5,6 +5,12 @@ import VansList from "@/components/vans/VanList";
 import VansFilter from "@/components/vans/VansFilter";
 import { ISearchParams } from "@/types/searchParams";
 import { ToastContainer } from "react-toastify";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Browse Vans | Van Life",
+  description: "Explore our collection of vans available for rent. Filter by type, location, and features to find the perfect van for your next adventure."
+};
 
 const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
   const searchParams = await props.searchParams;

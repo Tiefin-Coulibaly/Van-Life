@@ -1,15 +1,14 @@
 import { FaTimesCircle } from "react-icons/fa";
 import Link from "next/link";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Payment Cancelled | Van Life",
+  description:
+    "Your van booking payment has been cancelled. No charges have been made to your account.",
+};
 
 export default async function PaymentCancelPage() {
-  const session = await auth();
-  const userId = session?.user?.id || null;
-  if (!session || !userId) {
-    redirect("/auth/signin");
-  }
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">

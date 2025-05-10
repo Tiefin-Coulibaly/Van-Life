@@ -1,5 +1,4 @@
 import TermsOfService from "@/components/termsOfServices/TermsOfServices";
-import { revalidatePath } from "next/cache";
 
 export const metadata = {
   title: "Terms of Service - Van Life",

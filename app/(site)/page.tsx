@@ -6,12 +6,12 @@ import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Testimonial from "@/components/Testimonial";
 
-
 export const metadata: Metadata = {
-  title: "Next.js Starter Template for SaaS Startups - Solid SaaS Boilerplate",
-
-  // other metadata
-  description: "This is Home for Solid Pro",
+  title: "Van Life | Adventure Awaits",
+  description: "Rent high-quality vans for your next adventure with Van Life.",
+  icons: {
+    icon: "/images/logo/company-logo_svg.png",
+  },
 };
 
 export default function Home() {
