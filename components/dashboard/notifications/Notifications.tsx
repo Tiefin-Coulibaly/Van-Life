@@ -1,14 +1,25 @@
-// components/dashboard/notifications/Notifications.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { Notification } from "@prisma/client";
-import { markAllNotificationsAsRead, markNotificationAsRead } from "@/app/lib/actions/dashboardActions";
+import {
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
+} from "@/app/lib/actions/dashboardActions";
+import { useRouter } from "next/navigation";
 
-const Notifications = ({notifications}:{notifications:Notification[]}) => {
+const Notifications = ({
+  notifications,
+}: {
+  notifications: Notification[];
+}) => {
+  const router = useRouter();
 
+  useEffect(() => {
+    router.refresh();
+  }, [notifications]);
 
   const filteredNotifications = React.useMemo(() => {
     if (!notifications) return [];
@@ -23,7 +34,6 @@ const Notifications = ({notifications}:{notifications:Notification[]}) => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   }, [filteredNotifications]);
-
 
   return (
     <section className="mb-6 rounded-lg bg-white p-6 shadow-md">

@@ -308,11 +308,30 @@ export const fetchReviewsWithVans = async (
   return reviews;
 };
 
-export const determineHowManyDaysAgo = (date: Date): number => {
+export const determineHowManyDaysAgo = (date: Date | string): number => {
+  // Handle both Date objects and date strings
+  const inputDate = date instanceof Date ? date : new Date(date);
   const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
+  
+  // Reset hours, minutes, seconds, and milliseconds to compare dates only
+  const dateWithoutTime = new Date(
+    inputDate.getFullYear(),
+    inputDate.getMonth(),
+    inputDate.getDate()
+  );
+  
+  const nowWithoutTime = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+  
+  // Calculate difference in milliseconds and convert to days
+  const diffTime = nowWithoutTime.getTime() - dateWithoutTime.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Return 0 for today, actual number for past dates
+  return diffDays < 0 ? 0 : diffDays;
 };
 
   export const markAllNotificationsAsRead = async () => {

@@ -8,7 +8,7 @@ import {
   PaymentMethod,
 } from "@prisma/client";
 import Stripe from "stripe";
-import { determineBookingStatus } from "../utils/booking";
+import { determineBookingStatus, formatDateForDisplay } from "../utils/booking";
 import { BookingStats } from "@/types/bookingTypes";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -45,8 +45,8 @@ export const handleBooking = async (
       vanId,
       userId,
       vanName: name,
-      startDate: startDate,
-      endDate: endDate,
+      startDate,
+      endDate,
       daysBooked: diffDays,
       dailyRate: price,
       totalPrice,
@@ -68,12 +68,15 @@ export const createBookingTableAfterPayment = async (
   totalPrice: number,
   stripeSessionId: string,
 ): Promise<Booking> => {
+  const startDateObj = new Date(`${startDate}T12:00:00Z`);
+  const endDateObj = new Date(`${endDate}T12:00:00Z`);
+
   const booking = await prisma.booking.create({
     data: {
       vanId,
       userId,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
+      startDate: startDateObj,
+      endDate: endDateObj,
       status,
       totalAmount: totalPrice,
       stripeSessionId,
@@ -239,13 +242,11 @@ export const generateReceiptData = async (sessionId: string) => {
   );
 
   const notificationTitle = `Booking Confirmed for ${metadata.vanName}`;
-  const notificationMessage = `Your booking for ${
-    metadata.vanName
-  } from ${new Date(metadata.startDate).toLocaleDateString()} to ${new Date(
+  const notificationMessage = `Your booking for ${metadata.vanName} from ${formatDateForDisplay(
+    metadata.startDate,
+  )} to ${formatDateForDisplay(
     metadata.endDate,
-  ).toLocaleDateString()} has been confirmed. Your payment of $${Number(
-    metadata.totalPrice,
-  )} has been successfully processed.`;
+  )} has been confirmed. Your payment of $${Number(metadata.totalPrice)} has been successfully processed.`;
 
   const notification = await createNotificationTableAfterPayment(
     metadata.userId,
@@ -259,8 +260,8 @@ export const generateReceiptData = async (sessionId: string) => {
     receiptId: payment.id,
     bookingId: booking.id,
     vanName: metadata.vanName,
-    startDate: metadata.startDate,
-    endDate: metadata.endDate,
+    startDate: formatDateForDisplay(metadata.startDate),
+    endDate: formatDateForDisplay(metadata.endDate),
     daysBooked: metadata.daysBooked,
     dailyRate: metadata.dailyRate,
     totalAmount: metadata.totalPrice,

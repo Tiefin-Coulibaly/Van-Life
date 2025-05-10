@@ -67,7 +67,13 @@ const PaymentCard = ({ payment }: { payment: PaymentWithRelations }) => {
 
           <div className="mt-2 flex items-center justify-between text-xs">
             <span className="text-gray-500 dark:text-gray-400">
-              {diffDays} days ago • {payment.method}
+              {diffDays === 0 ? (
+                "Today"
+              ) : (
+                <>
+                  {diffDays} days ago • {payment.method}
+                </>
+              )}
             </span>
 
             {payment.receiptUrl && (

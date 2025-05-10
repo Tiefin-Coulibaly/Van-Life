@@ -36,6 +36,8 @@ const VanDetails = ({
   const [totalPrice, setTotalPrice] = useState(0);
   const router = useRouter();
 
+
+
   const { data: UserSession, update } = useSession();
 
   const handleOpenModal = () => {
