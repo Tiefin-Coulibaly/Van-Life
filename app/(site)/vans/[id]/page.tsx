@@ -4,6 +4,12 @@ import {
   isVanAvailable,
   updateVanAvailability,
 } from "@/app/lib/actions/vanActions";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Van Details | Van Life",
+  description: "Explore the features, availability, and booking options for this van. Find detailed specifications and plan your next adventure with Van Life."
+};
 
 const page = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;

@@ -1,17 +1,19 @@
 import React from "react";
 import Payments from "@/components/dashboard/payments/Payments";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { fetchUserData } from "@/app/lib/actions/dashboardActions";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Payment History | Van Life Dashboard",
+  description: "View your payment history, receipts, and transaction details for all your Van Life rentals and bookings."
+};
 
 const page = async () => {
 
   const session = await auth();
-  if (!session || !session.user) {
-    redirect("/auth/signin?callbackUrl=/payments");
-  }
 
-   const userData = await fetchUserData(session.user.id as string);
+   const userData = await fetchUserData(session?.user.id as string);
   return <Payments payments={userData?.payments || []}/>;
 };
 

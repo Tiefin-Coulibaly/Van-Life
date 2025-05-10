@@ -9,7 +9,8 @@ import {
 } from "@prisma/client";
 import Stripe from "stripe";
 import { determineBookingStatus, formatDateForDisplay } from "../utils/booking";
-import { BookingStats } from "@/types/bookingTypes";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -25,6 +26,11 @@ export const handleBooking = async (
   diffDays: number,
   totalPrice: number,
 ): Promise<Stripe.Checkout.Session> => {
+  const userSession = await auth();
+  if (!userSession) {
+    redirect("/auth/signin?callbackUrl=/vans");
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [

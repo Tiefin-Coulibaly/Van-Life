@@ -3,10 +3,9 @@ import Contact from "@/components/Contact";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Support Page - Solid SaaS Boilerplate",
-
-  // other metadata
-  description: "This is Support page for Solid Pro",
+  title: "Customer Support | Van Life",
+  description:
+    "Get help with your Van Life bookings, rentals, or account. Our support team is ready to assist you with any questions or issues.",
 };
 
 const SupportPage = () => {

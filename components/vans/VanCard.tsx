@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { VanCardProps } from "@/types/vanProp";
-import Link from "next/link";
 
 
 const VanCard: React.FC<VanCardProps> = ({ name, price, type, city, country, rating, image}) => {
