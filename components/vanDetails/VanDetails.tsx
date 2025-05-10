@@ -38,7 +38,7 @@ const VanDetails = ({
 
 
 
-  const { data: UserSession, update } = useSession();
+  const { data: UserSession } = useSession();
 
   const handleOpenModal = () => {
     if (!UserSession) {

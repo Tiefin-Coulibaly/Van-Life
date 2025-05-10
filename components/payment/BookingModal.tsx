@@ -5,7 +5,6 @@ import {
   calculateTotalPrice,
   formatDateForDisplay,
 } from "@/app/lib/utils/booking";
-import { set } from "mongoose";
 
 interface BookingModalProps {
   vanId: string;
