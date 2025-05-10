@@ -12,7 +12,7 @@ export const fetchAllVans = async (): Promise<Van[]> => {
     return vans;
   } catch (error) {
     console.log(`Failed to fetch all vans: ${error}`);
-    throw new Error("Failed to fetch vans");
+    return [];
   }
 };
 

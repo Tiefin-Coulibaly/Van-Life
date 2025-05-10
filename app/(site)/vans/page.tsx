@@ -7,10 +7,9 @@ import { ISearchParams } from "@/types/searchParams";
 
 const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
   const searchParams = await props.searchParams;
-  console.log(searchParams)
 
   return (
-    <main className="mt-30 ">
+    <main className="pb-20 pt-50">
       <Heading1 title="Explore our van options" />
 
       <VansFilter />
@@ -29,6 +28,3 @@ const VansPage = async (props: { searchParams?: Promise<ISearchParams> }) => {
 
 export default VansPage;
 
-// TODO: handle the layout of the h1 on this page
-// TODO: add filtering feature : ask chat gpt the best filtering feature to add for a new issue
-// TODO: handle the vans detail page (for new issue)

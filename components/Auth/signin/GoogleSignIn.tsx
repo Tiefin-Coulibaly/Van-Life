@@ -3,6 +3,7 @@ import { useLoginContext } from "@/components/context/loginContext";
 
 const GoogleSignIn = () => {
   const { setIsLoggedIn } = useLoginContext();
+  
   const handleGoogleSignIn = async () => {
     try {
       await signUserInWithGoogle();
