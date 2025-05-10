@@ -1,16 +1,13 @@
 import Profile from "@/components/dashboard/profile/Profile";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Profile | Van Life Dashboard",
+  description:
+    "View and manage your personal information, account settings, and preferences for your Van Life account.",
+};
 
 const page = async () => {
-  // get the session
-  const session = await auth();
-
-  // protect the route by redirecting the user to the
-  // log in page
-  if (!session || !session.user) {
-    redirect("/auth/signin?callbackUrl=/profile");
-  }
   return <Profile />;
 };
 

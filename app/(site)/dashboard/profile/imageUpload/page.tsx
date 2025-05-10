@@ -1,13 +1,12 @@
 import ImageDropzone from "@/components/dashboard/profile/ImageDropzone";
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Upload Profile Image | Van Life Dashboard",
+  description: "Upload or update your profile picture for your Van Life account to personalize your experience."
+};
 
 const ImageUpload = async () => {
-  const session = await auth();
-
-  if (!session || !session.user) {
-    redirect("/auth/signin");
-  }
 
   return <ImageDropzone />;
 };
