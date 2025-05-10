@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { stat } from "fs";
 
 interface LoginContextType {
   isLoggedIn: boolean;
@@ -11,6 +13,16 @@ const LoginContext = createContext<LoginContextType>({
 });
 
 const LoginContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const { data: UserSession, status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsLoggedIn(true);
+    } else if (status === "unauthenticated") {
+      setIsLoggedIn(false);
+    }
+  }, [status]);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>

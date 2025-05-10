@@ -16,30 +16,18 @@ import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
   const { data: session, update, status } = useSession();
+  console.log("Session data:", session);
   const router = useRouter();
   if (!session) {
-    router.replace("/auth/signin");
+    router.refresh();
   }
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [receipt, setReceipt] = useState<IReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (status === 'loading') return; 
-
-    if (!session) {
-      router.replace("/auth/signin?callbackUrl=" + encodeURIComponent(window.location.href));
-    } else {
-      setIsAuthChecking(false); 
-    }
-    
-  }, [status, session, router]); 
-
-  useEffect(() => {
-    if (isAuthChecking || !session) return;
 
     if (sessionId) {
       async function fetchReceipt() {
@@ -62,14 +50,6 @@ export default function PaymentSuccessPage() {
     }
   }, [sessionId]);
 
-  if (isAuthChecking || status === 'loading') {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <FaSpinner className="animate-spin text-4xl text-gray-700" />
-        <p className="mt-4 text-lg">Verifying your account...</p>
-      </div>
-    );
-  }
 
   if (loading) {
     return (

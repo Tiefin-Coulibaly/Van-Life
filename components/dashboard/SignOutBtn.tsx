@@ -14,11 +14,14 @@ const SignOutBtn = ({
 }) => {
   const { setIsLoggedIn } = useLoginContext();
   const router = useRouter();
+
+
   return (
     <form
       action={async () => {
         await signUserOUt();
         setIsLoggedIn(false);
+        router.push("/auth/signin");
       }}
     >
       <button
