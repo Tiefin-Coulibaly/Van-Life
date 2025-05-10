@@ -19,7 +19,6 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Feature />
       <CTA />
       <FAQ />
       <Testimonial />

@@ -143,6 +143,6 @@ module.exports = withMT({
         line3: "line 9s linear infinite",
       },
     },
+
   },
-  plugins: [],
 });
