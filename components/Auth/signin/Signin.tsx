@@ -18,12 +18,10 @@ const Signin = () => {
   const callbackUrl = params.get("callbackUrl");
   const errorType = params.get("error");
 
-  // Force a refresh when component mounts to ensure animations play
   useEffect(() => {
     router.refresh();
   }, [router]);
 
-  // Handle authentication errors from Google
   useEffect(() => {
     if (errorType) {
       setSignInError(googleErrorMessage(errorType as string));
