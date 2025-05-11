@@ -1,5 +1,5 @@
 {
     "buildCommand": "pnpm run build",
     "installCommand": "pnpm install --prefer-offline --no-audit --no-fund",
-    "framework": "Next.js"
+    "framework": "nextjs"
 }
