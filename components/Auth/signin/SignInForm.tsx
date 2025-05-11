@@ -10,12 +10,15 @@ import { signInSchema } from "@/app/lib/utils/zod";
 import { ISignIn } from "@/types/signIn";
 import { useLoginContext } from "@/components/context/loginContext";
 
-const SignInForm = ({ callbackUrl }: { callbackUrl: string | null }) => {
+const SignInForm = ({
+  callbackUrl,
+}: {
+  callbackUrl: string | string[] | null | undefined;
+}) => {
   const { setIsLoggedIn } = useLoginContext();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize form with zod schema validation
   const {
     register,
     handleSubmit,
@@ -29,7 +32,6 @@ const SignInForm = ({ callbackUrl }: { callbackUrl: string | null }) => {
 
     const result = await signUserInWithCredentials(formData);
 
-    // Process authentication result
     if (result?.error) {
       setIsLoading(false);
       setError(result.error);
@@ -38,7 +40,6 @@ const SignInForm = ({ callbackUrl }: { callbackUrl: string | null }) => {
       setIsLoggedIn(true);
       toast.success("Successfully logged in");
 
-      // Handle redirect with optional callback URL
       if (callbackUrl) {
         const url = `${result.redirectTo}/${callbackUrl}`;
         setIsLoading(false);

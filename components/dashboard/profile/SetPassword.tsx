@@ -5,18 +5,21 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordSchema } from "@/app/lib/utils/zod";
 import { setPasswordForUser } from "@/app/lib/actions/userAccountActionsForClient";
 import { SetPasswordFormValues } from "@/types/setPassword";
 
-export default function SetPassword() {
+export default function SetPassword({
+  mode,
+}: {
+  mode: string | string[] | undefined;
+}) {
   const { data: session, update } = useSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const isChangeMode = searchParams.get("mode") === "change";
-  
+  const isChangeMode = mode === "change";
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,19 +41,17 @@ export default function SetPassword() {
 
     setIsSubmitting(true);
     try {
-      // Set the password using the server action
       const result = await setPasswordForUser(session.user.id, data.password);
-      
-      // Refresh the session to capture any changes
       await update();
-      
+
       if (isChangeMode) {
         toast.success("Password changed successfully!");
       } else {
-        toast.success("Password set successfully! You can now sign in with your email and password.");
+        toast.success(
+          "Password set successfully! You can now sign in with your email and password.",
+        );
       }
-      
-      // Redirect back to profile page
+
       router.push("/dashboard/profile");
     } catch (error) {
       console.error("Error setting password:", error);
@@ -153,9 +154,13 @@ export default function SetPassword() {
             disabled={isSubmitting}
             className="w-full rounded-md bg-black py-2 font-medium text-white transition hover:bg-gray-800 disabled:bg-black"
           >
-            {isSubmitting 
-              ? (isChangeMode ? "Changing Password..." : "Setting Password...") 
-              : (isChangeMode ? "Change Password" : "Set Password")}
+            {isSubmitting
+              ? isChangeMode
+                ? "Changing Password..."
+                : "Setting Password..."
+              : isChangeMode
+                ? "Change Password"
+                : "Set Password"}
           </button>
           <button
             type="button"

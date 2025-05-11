@@ -9,14 +9,18 @@ import { googleErrorMessage } from "@/app/lib/utils/googleErrorMessage";
 import { useLoginContext } from "@/components/context/loginContext";
 import AnimationWrapper from "@/components/animationWrapper/AnimationWrapper";
 
-const Signin = () => {
+const Signin = ({
+  callbackUrl,
+  errorType,
+}: {
+  callbackUrl: string | null | undefined | string[];
+  errorType: string | null | undefined | string[];
+}) => {
   const router = useRouter();
   const { setIsLoggedIn } = useLoginContext();
   const [signInError, setSignInError] = useState<string>("");
 
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl");
-  const errorType = params.get("error");
 
   useEffect(() => {
     router.refresh();

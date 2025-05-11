@@ -7,10 +7,14 @@ export const metadata: Metadata = {
     "Sign in to your Van Life account to manage your bookings, explore van rentals, and continue your adventure on the road.",
 };
 
-const SigninPage = () => {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+const SigninPage = async(props:{searchParams:SearchParams}) => {
+  const searchParams = await props.searchParams;
+  const errorType = searchParams.error;
+  const callbackUrl = searchParams.callbackUrl;
   return (
     <>
-      <Signin />
+      <Signin callbackUrl={callbackUrl} errorType={errorType}/>
     </>
   );
 };

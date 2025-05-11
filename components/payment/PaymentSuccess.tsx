@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { generateReceiptData } from "@/app/lib/actions/bookingActions";
 import {
   FaCheckCircle,
@@ -14,15 +13,17 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function PaymentSuccessPage() {
-  const { data: session, update, status } = useSession();
+export default function PaymentSuccessPage({
+  sessionId,
+}: {
+  sessionId: string;
+}) {
+  const { data: session, update } = useSession();
   console.log("Session data:", session);
   const router = useRouter();
   if (!session) {
     router.refresh();
   }
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
   const [receipt, setReceipt] = useState<IReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

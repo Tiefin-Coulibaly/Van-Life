@@ -13,7 +13,7 @@ const page = async () => {
 
   const session = await auth();
 
-   const userData = await fetchUserData(session?.user.id as string);
+  const userData = await fetchUserData(session?.user.id as string);
   return <Payments payments={userData?.payments || []}/>;
 };
 
