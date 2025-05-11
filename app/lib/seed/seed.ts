@@ -1,4 +1,4 @@
-import { FuelType, Role, Type, BookingStatus, PaymentStatus, PaymentMethod, NotificationType } from "@prisma/client";
+import { FuelType, Role, Type, BookingStatus, PaymentMethod, NotificationType } from "@prisma/client";
 import { prisma } from "../../../prisma/prisma";
 import { notificationTemplates, reviewComments, userData,  vansData } from "../data/data";
 import { v4 as uuidv4 } from "uuid";
@@ -7,25 +7,18 @@ import { v4 as uuidv4 } from "uuid";
 async function main() {
   console.log("Starting database seeding...");
   
-  // 1. Seed users first
   const users = await seedUsers();
   
-  // 2. Seed vans
   await seedVans(users);
   
-  // 3. Seed bookings
   await seedBookings();
   
-  // 4. Seed reviews
   await seedReviews();
   
-  // 5. Seed payments
   await seedPayments();
-  
-  // 6. Seed notifications
+
   await seedNotifications();
   
-  // 7. Seed accounts for Google auth
   await seedAccounts();
   
   console.log("Database seeding completed successfully!");
@@ -299,7 +292,6 @@ async function seedPayments() {
       userId: string;
       vanId: string;
       amount: number;
-      status: PaymentStatus;
       method: PaymentMethod;
     }[] = [];
     
@@ -327,7 +319,6 @@ async function seedPayments() {
         userId: booking.userId,
         vanId: booking.vanId,
         amount: booking.totalAmount,
-        status: statuses[statusIndex] as PaymentStatus,
         method: method as PaymentMethod
       });
     }
