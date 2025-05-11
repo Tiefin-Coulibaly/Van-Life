@@ -1,15 +1,18 @@
 {
-  "name": "solid-nextjs",
+  "name": "van_life",
   "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} app/lib/seed/seed.ts"
+  },
+  "engines": {
+    "node": ">=22.11.0"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
