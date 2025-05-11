@@ -1,11 +1,10 @@
-
-"use client";
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ErrorPage() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function ErrorPage(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
+  const error = searchParams.error;
 
   let errorMessage: string;
 
