@@ -6,7 +6,6 @@ import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { Payment } from "@prisma/client";
-import { useUserData } from "@/components/context/userDataContext";
 import { formatDate } from "@/app/lib/actions/dashboardActions";
 import { PaymentWithBooking } from "@/types/user";
 
