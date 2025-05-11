@@ -9,40 +9,27 @@ import { useForm } from "react-hook-form";
 import { IPasswordReset } from "@/types/passwordReset";
 import { resetUserPassword } from "@/app/lib/actions/passwordResetActions";
 import { useSearchParams } from "next/navigation";
+import { SearchParams } from "@/app/(site)/auth/passwordReset/page";
 
-/**
- * PasswordReset Component
- * Handles password reset functionality with form validation
- * Retrieves email from URL parameters and processes password reset
- */
-const PasswordReset = () => {
-  // Component state management
+
+const PasswordReset = ({email}:{email:string}) => {
+
   const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [btnButton, setBtnButton] = useState<string>("Reset password");
 
-  // Extract email from URL parameters
-  const params = useSearchParams();
-  const email = params.get("email");
   const router = useRouter();
 
-  // Initialize react-hook-form with password reset interface
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IPasswordReset>();
 
-  /**
-   * Form submission handler
-   * Validates password match and calls a server action
-   * Redirects to sign-in page on success
-   */
   const onSubmit = async (formData: IPasswordReset) => {
     setIsLoading(true);
     setBtnButton("Resetting password");
 
-    // Validate password match
     if (formData.newPassword !== formData.confirmedPassword) {
       setError("Your password are not matching. Please try again");
       setIsLoading(false);
@@ -50,7 +37,6 @@ const PasswordReset = () => {
       return;
     }
 
-    // Process password reset and redirect
     await resetUserPassword(email as string, formData.newPassword);
     setBtnButton("Reset password");
     router.push("/auth/signin");
