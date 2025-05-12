@@ -199,80 +199,131 @@ const updateUserVansRented = async (userId: string, vanId: string) => {
 };
 
 export const generateReceiptData = async (sessionId: string) => {
-  const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: [
-      "payment_intent",
-      "customer",
-      "payment_intent.charges",
-      "line_items",
-    ],
-  });
+  try {
+    console.log("Starting receipt generation for session:", sessionId);
+    
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: [
+        "payment_intent",
+        "customer",
+        "payment_intent.charges",
+        "line_items",
+      ],
+    });
 
-  if (!session) {
-    throw new Error("Session not found");
+    if (!session) {
+      throw new Error("Session not found");
+    }
+
+    const metadata = session.metadata!;
+    console.log("Session metadata:", metadata);
+
+    // First, handle all database operations
+    const bookingStatus = determineBookingStatus(session.payment_status);
+
+    const paymentMethod =
+      session.payment_method_types[0].toUpperCase() === "CARD"
+        ? PaymentMethod.Card
+        : PaymentMethod.Paypal;
+
+    const receiptUrl = await getReceiptURL(session);
+
+    // Check if booking already exists to prevent duplicates
+    const existingBooking = await prisma.booking.findFirst({
+      where: { stripeSessionId: sessionId },
+    });
+
+    let booking;
+    if (existingBooking) {
+      console.log("Booking already exists:", existingBooking.id);
+      booking = existingBooking;
+    } else {
+      booking = await createBookingTableAfterPayment(
+        metadata.vanId,
+        metadata.userId,
+        metadata.startDate,
+        metadata.endDate,
+        bookingStatus as BookingStatus,
+        Number(metadata.totalPrice),
+        sessionId,
+      );
+    }
+
+    // Get payment ID from session
+    const stripePaymentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : session.payment_intent?.id;
+
+    // Check if payment already exists
+    const existingPayment = await prisma.payment.findFirst({
+      where: { stripePaymentId: stripePaymentId as string },
+    });
+
+    let payment;
+    if (existingPayment) {
+      console.log("Payment already exists:", existingPayment.id);
+      payment = existingPayment;
+    } else if (stripePaymentId) {
+      payment = await createPaymentTableAfterPayment(
+        metadata.userId,
+        metadata.vanId,
+        booking.id,
+        paymentMethod,
+        stripePaymentId as string,
+        receiptUrl,
+      );
+    }
+
+    // Create notification (can have multiple, so no check needed)
+    const notificationTitle = `Booking Confirmed for ${metadata.vanName}`;
+    const notificationMessage = `Your booking for ${metadata.vanName} from ${formatDateForDisplay(
+      metadata.startDate,
+    )} to ${formatDateForDisplay(
+      metadata.endDate,
+    )} has been confirmed. Your payment of $${Number(metadata.totalPrice)} has been successfully processed.`;
+
+    await createNotificationTableAfterPayment(
+      metadata.userId,
+      NotificationType.Booking,
+      notificationTitle,
+      notificationMessage,
+    );
+
+    // Update user's vans rented collection
+    await updateUserVansRented(metadata.userId, metadata.vanId);
+
+    // Helper function for date formatting
+    const formatDate = (dateString: string) => {
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } catch (e) {
+        return dateString; // Return original if parsing fails
+      }
+    };
+
+    // Return properly formatted receipt data
+    return {
+      receiptId: payment?.id || "N/A",
+      bookingId: booking.id,
+      vanName: metadata.vanName || "Van rental",
+      startDate: formatDate(metadata.startDate),
+      endDate: formatDate(metadata.endDate),
+      daysBooked: parseInt(metadata.daysBooked) || 0,
+      dailyRate: parseFloat(metadata.dailyRate) || 0,
+      totalAmount: parseFloat(metadata.totalPrice) || 0,
+      paymentDate: new Date().toLocaleDateString(),
+      stripeReceiptUrl: receiptUrl,
+      customerEmail: session.customer_details?.email || "Not provided",
+      paymentStatus: session.payment_status,
+    };
+  } catch (error) {
+    console.error("Error in generateReceiptData:", error);
+    throw error;
   }
-
-  const metadata = session.metadata!;
-
-  const bookingStatus = determineBookingStatus(session.payment_status);
-
-  const paymentMethod =
-    session.payment_method_types[0].toUpperCase() === "CARD"
-      ? PaymentMethod.Card
-      : PaymentMethod.Paypal;
-
-  const receiptUrl = await getReceiptURL(session);
-
-  const booking = await createBookingTableAfterPayment(
-    metadata.vanId,
-    metadata.userId,
-    metadata.startDate,
-    metadata.endDate,
-    bookingStatus as BookingStatus,
-    Number(metadata.totalPrice),
-    sessionId,
-  );
-
-  const stripePaymentId =
-    typeof session.payment_intent === "string"
-      ? session.payment_intent
-      : session.payment_intent?.id;
-
-  const payment = await createPaymentTableAfterPayment(
-    metadata.userId,
-    metadata.vanId,
-    booking.id,
-    paymentMethod,
-    stripePaymentId as string,
-    receiptUrl,
-  );
-
-  const notificationTitle = `Booking Confirmed for ${metadata.vanName}`;
-  const notificationMessage = `Your booking for ${metadata.vanName} from ${formatDateForDisplay(
-    metadata.startDate,
-  )} to ${formatDateForDisplay(
-    metadata.endDate,
-  )} has been confirmed. Your payment of $${Number(metadata.totalPrice)} has been successfully processed.`;
-
-  const notification = await createNotificationTableAfterPayment(
-    metadata.userId,
-    NotificationType.Booking,
-    notificationTitle,
-    notificationMessage,
-  );
-
-  await updateUserVansRented(metadata.userId, metadata.vanId);
-  return {
-    receiptId: payment.id,
-    bookingId: booking.id,
-    vanName: metadata.vanName,
-    startDate: formatDateForDisplay(metadata.startDate),
-    endDate: formatDateForDisplay(metadata.endDate),
-    daysBooked: metadata.daysBooked,
-    dailyRate: metadata.dailyRate,
-    totalAmount: metadata.totalPrice,
-    paymentDate: new Date(),
-    stripeReceiptUrl: receiptUrl,
-    customerEmail: session.customer_details?.email,
-  };
 };
