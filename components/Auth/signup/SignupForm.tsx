@@ -2,13 +2,22 @@
 
 import { useForm } from "react-hook-form";
 import { createUser } from "@/app/lib/actions/authActions";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { useState} from "react"; // Import properly
+import { toast, ToastOptions } from "react-toastify"; // Import ToastOptions
 import { UserRegistration } from "@/types/userRegistrationForm";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+// Define common toast configuration
+const toastConfig: ToastOptions = {
+  position: "top-center",
+  autoClose: 1000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+};
 
 const SignupForm = (): React.ReactElement => {
   const {
@@ -18,19 +27,27 @@ const SignupForm = (): React.ReactElement => {
   } = useForm<UserRegistration>();
 
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
 
   const onSubmit = async (data: UserRegistration) => {
     setLoading(true);
-    const response: { success: boolean; message: string } =
-      await createUser(data);
-    setLoading(false);
-    if (response.success) {
-      toast.success(response.message);
-      router.push("/auth/signin");
-    } else {
-      toast.error(response.message);
+    
+    try {
+      const response: { success: boolean; message: string } = 
+        await createUser(data);
+        
+      if (response.success) {
+        toast.success(response.message, toastConfig);
+        setTimeout(() => {
+          router.push("/auth/signin");
+        }, 1500); 
+      } else {
+        toast.error(response.message, toastConfig);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred", toastConfig);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -177,6 +194,4 @@ const SignupForm = (): React.ReactElement => {
 };
 
 export default SignupForm;
-function useEffect(arg0: () => void, arg1: AppRouterInstance[]) {
-  throw new Error("Function not implemented.");
-}
+

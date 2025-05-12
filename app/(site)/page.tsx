@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Hero from "@/components/Hero";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
-
 import Contact from "@/components/Contact";
 import Testimonial from "@/components/Testimonial";
 
