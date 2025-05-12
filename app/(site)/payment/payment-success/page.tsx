@@ -5,6 +5,7 @@ import PaymentSuccessPage from "@/components/payment/PaymentSuccess";
 import { redirect } from "next/navigation";
 import { use } from 'react';
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation";
 
 // export const metadata: Metadata = {
 //   title: "Payment Successful | Van Life",
@@ -15,8 +16,10 @@ import { useSession } from "next-auth/react"
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 const page = async (props: { searchParams: SearchParams }) => {
+  const router = useRouter();
   const { data: session } = useSession()
-  if (!session) redirect("/auth/signin?callbackUrl=payment/payment-success");
+  console.error("Session data on payment page:", session);
+  if (!session) router.replace("/auth/signin?callbackUrl=payment/payment-success");
   const searchParams = use(props.searchParams)
   const sessionId = searchParams.session_id;
   return <PaymentSuccessPage sessionId={sessionId as string} />;
