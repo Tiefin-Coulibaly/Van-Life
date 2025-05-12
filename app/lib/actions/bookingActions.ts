@@ -11,6 +11,7 @@ import Stripe from "stripe";
 import { determineBookingStatus, formatDateForDisplay } from "../utils/booking";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { updateVanAvailabilityAfterBooking } from "./vanActions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -88,6 +89,8 @@ export const createBookingTableAfterPayment = async (
       stripeSessionId,
     },
   });
+
+  await updateVanAvailabilityAfterBooking(vanId);
 
   return booking;
 };
@@ -248,6 +251,8 @@ export const generateReceiptData = async (sessionId: string) => {
         sessionId,
       );
     }
+
+    await updateVanAvailabilityAfterBooking(metadata.vanId);
 
     // Get payment ID from session
     const stripePaymentId =

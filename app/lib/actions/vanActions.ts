@@ -92,19 +92,62 @@ export const fetchVanById = async (id: string): Promise<IVanWithBookings | null>
 };
 
 export const isVanAvailable = async (bookings: Booking[]): Promise<boolean> => {
-  const todaysDate = new Date();
-  if (bookings.length === 0) {
+  if (!bookings || bookings.length === 0) {
     return true;
   }
+  
+  const today = new Date();
 
-  const isBooked = bookings.some((booking) => {
+  today.setHours(0, 0, 0, 0);
+  
+ 
+  for (const booking of bookings) {
+  
+    if (booking.status === 'Canceled') continue;
+    
+
     const startDate = new Date(booking.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    
     const endDate = new Date(booking.endDate);
-    return todaysDate >= startDate && todaysDate <= endDate;
-  });
-
-  return !isBooked;
+    endDate.setHours(0, 0, 0, 0);
+    
+ 
+    if (today >= startDate && today <= endDate) {
+      console.log(`Van unavailable: Found booking from ${startDate} to ${endDate}`);
+      return false;
+    }
+  }
+  
+  return true;
 };
+
+export const updateVanAvailabilityAfterBooking = async (vanId: string): Promise<void> => {
+  try {
+    const van = await prisma.van.findUnique({
+      where: { id: vanId },
+      include: { bookings: true },
+    });
+    
+    if (!van) {
+      console.error(`Van with id ${vanId} not found`);
+      return;
+    }
+
+    const isAvailable = await isVanAvailable(van.bookings);
+    
+    if (van.available !== isAvailable) {
+      await prisma.van.update({
+        where: { id: vanId },
+        data: { available: isAvailable },
+      });
+      console.log(`Van ${vanId} availability updated to ${isAvailable}`);
+    }
+  } catch (error) {
+    console.error(`Failed to update van availability after booking: ${error}`);
+  }
+};
+
 
 export const updateVanAvailability = async (id: string, available: boolean): Promise<void> => {
   try {

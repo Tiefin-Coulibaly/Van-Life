@@ -5,21 +5,31 @@ import {
   updateVanAvailability,
 } from "@/app/lib/actions/vanActions";
 import { Metadata } from "next";
+import { revalidatePath } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Van Details | Van Life",
   description: "Explore the features, availability, and booking options for this van. Find detailed specifications and plan your next adventure with Van Life."
 };
 
+// Add this export to make the page dynamic
+export const dynamic = 'force-dynamic';
+
 const page = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;
   const id = params.id;
-  console.log("Van ID:", id);
+  
+  // Get van with bookings included
   const van = await fetchVanById(id);
+  
+  // Check availability based on current bookings
   const isVanAvailableNow = await isVanAvailable(van?.bookings ?? []);
-
+  
+  // Update if there's a mismatch
   if (van && isVanAvailableNow !== van.available) {
     await updateVanAvailability(id, isVanAvailableNow);
+    // Force revalidation of this path to reflect the changes
+    revalidatePath(`/vans/${id}`);
   }
 
   return (
@@ -44,6 +54,7 @@ const page = async (props: { params: Promise<{ id: string }> }) => {
             hasHeating: van.features?.hasHeating ?? false,
             petFriendly: van.features?.petFriendly ?? false,
           }}
+          // Use the freshly calculated value rather than the database value
           available={isVanAvailableNow}
         />
       )}
