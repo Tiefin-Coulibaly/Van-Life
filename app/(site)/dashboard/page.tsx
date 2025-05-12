@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import {
   calculateBookingStats,
   calculateRatingStats,
@@ -12,6 +11,7 @@ import KeyMetrics from "@/components/dashboard/overview/keyMetrics/KeyMetrics";
 import RecentBookings from "@/components/dashboard/overview/recentBookings/RecentBookings";
 import RecentPayments from "@/components/dashboard/overview/recentPayments/RecentPayment";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Dashboard Overview | Van Life",
@@ -21,6 +21,8 @@ export const metadata: Metadata = {
 
 const OverviewSection = async () => {
   const session = await auth();
+  if (!session) redirect("/auth/signin?callbackUrl=/dashboard");
+
   const userData = await userStats(session?.user.id as string);
   const bookingStats = calculateBookingStats(userData?.bookings as Booking[]);
   const totalVans = getTotalVans(userData?.vansRented as Van[]);

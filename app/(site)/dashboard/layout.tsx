@@ -5,8 +5,15 @@ import MobileAndTabletLayout from "@/components/dashboard/MobileAndTabletLayout"
 import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {useEffect} from "react";
+import { useRouter } from "next/navigation";
+
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  useEffect(() => {
+    router.refresh();
+  }, [router])
   return (
     <SessionProvider>
       <div className="mb-20 mt-18 mt-32 flex min-h-screen flex-col md:mt-35 lg:mt-40 lg:flex-row lg:bg-gray-100 xl:mt-45">

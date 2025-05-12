@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 const page = async () => {
   const session = await auth();
+  if (!session) redirect("/auth/signin?callbackUrl=dashboard/bookings");
 
   const userData = await fetchUserData(session?.user.id as string);
 

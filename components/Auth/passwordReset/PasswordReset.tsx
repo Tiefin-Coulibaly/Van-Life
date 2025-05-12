@@ -8,8 +8,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { IPasswordReset } from "@/types/passwordReset";
 import { resetUserPassword } from "@/app/lib/actions/passwordResetActions";
-import { useSearchParams } from "next/navigation";
-import { SearchParams } from "@/app/(site)/auth/passwordReset/page";
+import { toast } from "react-toastify";
 
 
 const PasswordReset = ({email}:{email:string}) => {
@@ -39,6 +38,7 @@ const PasswordReset = ({email}:{email:string}) => {
 
     await resetUserPassword(email as string, formData.newPassword);
     setBtnButton("Reset password");
+    toast.success("Password reset successfully");
     router.push("/auth/signin");
   };
 

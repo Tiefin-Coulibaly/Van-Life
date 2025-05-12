@@ -1,6 +1,8 @@
 import { FaTimesCircle } from "react-icons/fa";
 import Link from "next/link";
 import { Metadata } from "next";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Payment Cancelled | Van Life",
@@ -9,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function PaymentCancelPage() {
+  const session = await auth();
+  if (!session) redirect("/auth/signin?callbackUrl=/payment/payment-cancel");
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">

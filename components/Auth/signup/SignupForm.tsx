@@ -23,11 +23,9 @@ const SignupForm = (): React.ReactElement => {
 
   const onSubmit = async (data: UserRegistration) => {
     setLoading(true);
-
     const response: { success: boolean; message: string } =
       await createUser(data);
     setLoading(false);
-
     if (response.success) {
       toast.success(response.message);
       router.push("/auth/signin");

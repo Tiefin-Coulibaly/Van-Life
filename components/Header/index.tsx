@@ -23,7 +23,7 @@ const Header = () => {
 
   useEffect(() => {
     router.refresh();
-  }, [isLoggedIn, router, session, status]);
+  }, [router, session, status]);
 
   const toggleNavigation = () => {
     if (navigationOpen) {
@@ -54,7 +54,7 @@ const Header = () => {
     setUserDropdown(false);
     await signUserOUt();
     setIsLoggedIn(false);
-    router.push("/auth/signin");
+    window.location.href = "/auth/signin";
   };
 
   const handleMenuItemClick = () => {
@@ -69,6 +69,18 @@ const Header = () => {
       window.removeEventListener("scroll", handleStickyMenu);
     };
   }, []);
+
+  const getUserDisplayName = (user) => {
+  if (!user) return null;
+  
+  if (user.name) return user.name;
+  
+  const firstName = user.firstName || '';
+  const lastName = user.lastName || '';
+  
+  const fullName = `${firstName} ${lastName}`.trim();
+  return fullName ;
+};
 
   return (
     <header
@@ -203,7 +215,7 @@ const Header = () => {
           </nav>
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
-            {isLoggedIn ? (
+            {session ? (
               // User is signed in - show profile
               <div className="relative">
                 <button
@@ -224,7 +236,7 @@ const Header = () => {
                     )}
                   </div>
                   <span className="hidden text-sm font-medium md:block">
-                    {session?.user?.name || "User"}
+                    {getUserDisplayName(session?.user) || ""}
                   </span>
                   <svg
                     className="h-4 w-4"
@@ -250,7 +262,7 @@ const Header = () => {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                       onClick={() => {
                         setUserDropdown(false);
-                        handleMenuItemClick(); // Close mobile menu too
+                        handleMenuItemClick(); 
                       }}
                     >
                       Dashboard
@@ -260,7 +272,7 @@ const Header = () => {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                       onClick={() => {
                         setUserDropdown(false);
-                        handleMenuItemClick(); // Close mobile menu too
+                        handleMenuItemClick(); 
                       }}
                     >
                       Profile
@@ -268,7 +280,7 @@ const Header = () => {
                     <button
                       onClick={() => {
                         handleSignOut();
-                        handleMenuItemClick(); // Close mobile menu too
+                        handleMenuItemClick(); 
                       }}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                     >

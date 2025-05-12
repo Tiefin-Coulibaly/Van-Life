@@ -36,8 +36,16 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "randomuser.me",
-      }
+      },
     ],
+  },
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? {
+            exclude: ["warn"],
+          }
+        : false,
   },
 };
 

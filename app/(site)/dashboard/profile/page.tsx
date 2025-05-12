@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import Profile from "@/components/dashboard/profile/Profile";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "My Profile | Van Life Dashboard",
@@ -8,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 const page = async () => {
+  const session = await auth();
+    if (!session) redirect("/auth/signin?callbackUrl=dashboard/profile");
   return <Profile />;
 };
 

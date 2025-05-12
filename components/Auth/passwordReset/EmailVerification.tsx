@@ -36,15 +36,12 @@ const EmailVerification = () => {
           return;
         }
 
-        // redirect the user to the password reset page
-        // pass the email as a query parameter 
         router.push(
           `/auth/passwordReset?email=${(email as string).toLowerCase()}`,
         );
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(`Error on the reset password page: ${error}`);
         setError("Something Went wrong. Please try again later.");
       });
   };

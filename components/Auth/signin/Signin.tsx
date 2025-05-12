@@ -20,8 +20,6 @@ const Signin = ({
   const { setIsLoggedIn } = useLoginContext();
   const [signInError, setSignInError] = useState<string>("");
 
-  const params = useSearchParams();
-
   useEffect(() => {
     router.refresh();
   }, [router]);

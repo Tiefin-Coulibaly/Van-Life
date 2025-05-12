@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "@/app/lib/utils/zod";
 import { ISignIn } from "@/types/signIn";
 import { useLoginContext } from "@/components/context/loginContext";
+import { useEffect } from "react";
 
 const SignInForm = ({
   callbackUrl,
@@ -18,35 +19,43 @@ const SignInForm = ({
   const { setIsLoggedIn } = useLoginContext();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    router.prefetch("/dashboard");
+  }, [router]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ISignIn>({ resolver: zodResolver(signInSchema) });
-  const router = useRouter();
 
   async function onSubmit(formData: ISignIn) {
-    setError(null);
-    setIsLoading(true);
+    try {
+      setError(null);
+      setIsLoading(true);
 
-    const result = await signUserInWithCredentials(formData);
+      const result = await signUserInWithCredentials(formData);
 
-    if (result?.error) {
-      setIsLoading(false);
-      setError(result.error);
-      setIsLoggedIn(false);
-    } else if (result?.success && result.redirectTo) {
-      setIsLoggedIn(true);
-      toast.success("Successfully logged in");
+      if (result?.error) {
+        setError(result.error);
+        setIsLoggedIn(false);
+      } else if (result?.success) {
+        setIsLoggedIn(true);
+        toast.success("Successfully logged in");
 
-      if (callbackUrl) {
-        const url = `${result.redirectTo}/${callbackUrl}`;
-        setIsLoading(false);
-        router.push(url);
-      } else {
-        router.push(result.redirectTo);
+        if (callbackUrl && typeof callbackUrl === "string") {
+          window.location.href=callbackUrl;
+        } else {
+          window.location.href ="/dashboard";
+        }
+        
       }
+    } catch (error) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 

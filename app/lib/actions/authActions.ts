@@ -60,7 +60,7 @@ export const createUser = async (
       },
     });
 
-    return { success: true, message: "User created successfully!" };
+    return { success: true, message: "Account created successfully!" };
   } catch (error) {
     console.error(`Error inserting: ${error.message}`);
     return {
@@ -135,25 +135,23 @@ export const findUserByEmail = async (
 // Handle user sign in with credentials
 export const signUserInWithCredentials = async (formData: ISignIn) => {
   try {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
     });
+    
+    if (result?.error) {
+      return { error: "Invalid credentials. Please try again." };
+    }
+    
     revalidatePath("/", "layout");
     return { success: true, redirectTo: "/dashboard" };
   } catch (error) {
-    console.error("Credentials Authentication error:", error.type);
-    // console.log(error.Error)
-    return error.type === "CredentialsSignin"
-      ? {
-          error:
-            "Invalid credentials. Please try again. If you signed up with your Google account, sign in using Google. You can set up email and password login later in your account settings.",
-        }
-      : {
-          error:
-            "An unexpected error occurred. We are currently working on it. Please try again later",
-        };
+    console.error("Credentials Authentication error:", error);
+    return {
+      error: "An unexpected error occurred. We are currently working on it. Please try again later"
+    };
   }
 };
 

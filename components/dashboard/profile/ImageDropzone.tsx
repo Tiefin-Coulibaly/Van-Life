@@ -20,9 +20,8 @@ const ImageDropzone = () => {
   const [uploadImage, setUploadImage] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isImageConfirmed, setIsImageConfirmed] = useState(false);
- 
-  const session = useSession();
 
+  const session = useSession();
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -33,7 +32,6 @@ const ImageDropzone = () => {
       }
 
       if (rejectedFiles && rejectedFiles.length > 0) {
-        console.log(rejectedFiles);
         const errorMessage =
           rejectedFiles[0].errors[0].code === "file-invalid-type"
             ? "File type must be an image."
@@ -90,9 +88,19 @@ const ImageDropzone = () => {
           },
         });
 
-        toast.success("Image uploaded successfully!");
+        toast.success("Image uploaded successfully!", {
+          position: "top-center",
+          autoClose: 500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
-        console.log("Uploaded Image URL:", imageUrl);
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     } catch (error) {
       toast.error("Failed to upload image. Please try again.");
@@ -174,25 +182,29 @@ const ImageDropzone = () => {
       {/* Confirm / Cancel Buttons */}
       {imagePreviewUrl && (
         <div className="flex justify-end gap-4">
-          {!isImageConfirmed && <button
-            onClick={handleImageCancel}
-            className="rounded-md border border-gray-400 px-4 py-2 text-gray-700 transition hover:bg-gray-200"
-          >
-            Cancel
-          </button>}
-          {!isImageUploaded && <button
-            onClick={handleImageConfirmation}
-            className="rounded-md bg-black px-4 py-2 text-white transition hover:bg-gray-900"
-          >
-            {isImageUploading ? (
-              <div className="flex items-center gap-3">
-                Updating image
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-              </div>
-            ) : (
-              "Confirm"
-            )}
-          </button>}
+          {!isImageConfirmed && (
+            <button
+              onClick={handleImageCancel}
+              className="rounded-md border border-gray-400 px-4 py-2 text-gray-700 transition hover:bg-gray-200"
+            >
+              Cancel
+            </button>
+          )}
+          {!isImageUploaded && (
+            <button
+              onClick={handleImageConfirmation}
+              className="rounded-md bg-black px-4 py-2 text-white transition hover:bg-gray-900"
+            >
+              {isImageUploading ? (
+                <div className="flex items-center gap-3">
+                  Updating image
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                </div>
+              ) : (
+                "Confirm"
+              )}
+            </button>
+          )}
         </div>
       )}
     </>

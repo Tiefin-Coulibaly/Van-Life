@@ -59,6 +59,7 @@ const Profile = () => {
     });
 
     reset();
+    window.location.reload();
     setIsUserDataUpdating(false);
   };
 

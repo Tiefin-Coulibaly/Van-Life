@@ -4,18 +4,12 @@ import { redirect } from "next/navigation";
 import { fetchUserData } from "@/app/lib/actions/dashboardActions";
 
 const page = async () => {
+  const session = await auth();
+  if (!session) redirect("/auth/signin?callbackUrl=/dashboard/vans");
 
-    const session = await auth();
-  
-    if (!session || !session.user) {
-      redirect("/auth/signin?callbackUrl=/vans")
-    }
+  const userData = await fetchUserData(session.user.id as string);
 
-    const userData = await fetchUserData(session.user.id as string);
+  return <UserVans vans={userData?.vansRented || []} />;
+};
 
-  return (
-    <UserVans vans={userData?.vansRented || []}/>
-  )
-}
-
-export default page
+export default page;
