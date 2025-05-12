@@ -19,22 +19,27 @@ export default function PaymentSuccessPage({
   sessionId: string;
 }) {
   const { data: session, update } = useSession();
-  console.log("Session data:", session);
   const router = useRouter();
-  if (!session) {
-    router.refresh();
-  }
   const [receipt, setReceipt] = useState<IReceiptData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Handle session check in useEffect, not at component level
+  useEffect(() => {
+    if (!session) {
+      // Don't use router.refresh() here as it causes server/client mismatch
+      // Instead, use router.push() if you need to redirect
+      return;
+    }
+  }, [session, router]);
 
   useEffect(() => {
     if (sessionId) {
       async function fetchReceipt() {
         try {
-          const receiptData = await generateReceiptData(sessionId!);
+          const receiptData = await generateReceiptData(sessionId);
           setReceipt(receiptData);
-          await update();
+          await update();  // Update the session after receipt generation
         } catch (err) {
           console.error("Failed to generate receipt:", err);
           setError("Failed to generate your receipt. Please contact support.");
@@ -48,7 +53,8 @@ export default function PaymentSuccessPage({
       setError("No payment information found.");
       setLoading(false);
     }
-  }, [sessionId]);
+  }, [sessionId, update]);
+
 
   if (loading) {
     return (
