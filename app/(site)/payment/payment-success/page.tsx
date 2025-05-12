@@ -1,5 +1,11 @@
-import PaymentSuccessPage from "@/components/payment/PaymentSuccess";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
+
+// Dynamically import the client component with no SSR
+const PaymentSuccessPage = dynamic(
+  () => import("@/components/payment/PaymentSuccess"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "Payment Successful | Van Life",
@@ -25,7 +31,7 @@ export default async function Page({ searchParams }) {
       );
     }
     
-    // Continue with the normal component render
+    // Use the dynamically imported component with no SSR
     return <PaymentSuccessPage sessionId={sessionId} />;
   } catch (error) {
     console.error("Error in payment success page:", error);
