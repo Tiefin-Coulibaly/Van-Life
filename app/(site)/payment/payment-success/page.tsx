@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import PaymentSuccessPage from "@/components/payment/PaymentSuccess";
 
-// Create a wrapper component for search params
+
 function PaymentSuccessWithParams() {
   const searchParams = useSearchParams();
   const [sessionId, setSessionId] = useState<string | null>(null);
