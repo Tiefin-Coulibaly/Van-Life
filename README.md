@@ -1,88 +1,60 @@
-# Solid - Free Next.js Web Template and Starter Kit for SaaS
+# Van Life 🚐
 
-Solid is a free Next.js template specifically crafted for startups, SaaS, and software websites. It provides an extensive array of necessary sections, elements, and pages required to build a fully-equipped website for any SaaS, software, or startup site. Comes with all cutting edge React and Next.js features - **Built with Next.js 13, React 18 and TypeScript.**
+A full-stack web application for booking premium van rentals, featuring seamless authentication, payments, and a responsive user experience.
 
-This Next.js template's homepage comes with an awesome hero area, logos of associated brands, a features section, an about section, another features section with tabs, counters, and star ratings, integration options, clear call-to-actions, an FAQ section with accordions, a testimonials section, pricing tables, a contact page, a blog, and a distinctive footer.
+![Van Life Screenshot](./public/images/van-life.png)
 
-**Solid Next.js template packed with all necessary external pages** - such as login, registration, blog grids, and single blog pages, among others. This broad collection of pages provides all the necessary tools to create a feature-packed, comprehensive, and visually appealing website or landing page for software, a web application, or SaaS.
+## 🌟 Overview
 
-### [🔥 Get Solid Pro - Next.js SaaS Boilerplate and Starter Kit](https://nextjstemplates.com/templates/solid)
+Van Life is a comprehensive van rental platform built with Next.js 15, TypeScript, Tailwind CSS, and Prisma. The application provides a seamless experience for users to browse, book, and manage van rentals, with robust authentication and secure payment processing via Stripe.
 
-![Startup Pro](https://uideck.com/wp-content/uploads/edd/2023/07/solid-saas.png)
+## ✨ Features
 
-### [🚀 Solid PRO Live Demo](https://solid.nextjstemplates.com/)
+- **Advanced Authentication System** using Next-Auth v5 with credentials and OAuth providers
+- **Secure Payment Processing** with Stripe integration 
+- **Responsive Design** optimized for all device sizes
+- **Full-featured Booking System** with availability management
+- **User Dashboard** for managing bookings and account details
+- **Real-time Data Updates** with server actions and revalidation
+- **Comprehensive Search and Filter** capabilities for finding the perfect van
 
-### [🚀 Solid FREE Live Demo](https://solid-free.nextjstemplates.com/)
+## 🛠️ Technology Stack
 
-### TailAdmin React PRO vs TailAdmin React FREE Comparison 📊
+- **Frontend**:
+  - Next.js 15 (App Router)
+  - React 19
+  - TypeScript
+  - Tailwind CSS
 
-#### [Solid PRO](https://solid.nextjstemplates.com/)
-- SaaS Boilerplate + Starter Kit with Essential Integrations and Functionalities
-- Essential Integrations: Auth, DB, Stripe, MDX and More ...
-- Fully Functional, Ready to Use Sanity Blog Support
-- Premium Email Support
-- Functional External Pages
-- Free Lifetime Future Updates
-___
-#### [Solid FREE](https://solid-free.nextjstemplates.com/)
-- Only UI - Coded for Next.js
-- No Integrations
-- No Functional Blogging System
-- External Pages without Functions/Integrations
-- Community Support
-- Free Lifetime Future Updates
-___
-
-### [📦 Download](https://nextjstemplates.com/templates/solid)
-
-### [🔥 Get Pro](https://nextjstemplates.com/templates/solid)
-
-### [🔌 Documentation](https://nextjstemplates.com/docs)
-
-### ⚡ Deploy Now
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNextJSTemplates%2Fsolid-nextjs)
-
-[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NextJSTemplates/solid-nextjs)
+- **Backend**:
+  - Server Components & Server Actions
+  - Next-Auth v5
+  - Prisma ORM
+  - PostgreSQL
+  - Stripe API
+  - Cloudinary for image storage
 
 
-## Installation
+## 📋 Key Technical Achievements
 
-Here are the steps you need to follow to install the dependencies.
+- **Implemented Secure Authentication**: Built a robust authentication system with Next-Auth v5, including credential and OAuth providers, secure session management, and role-based access control.
 
-1.Download and extract the template from **Next.js Templates.**
+- **Integrated Stripe Payment**: Created a secure payment flow with real-time payment status updates and receipt generation.
 
-2.**cd** into the template directory then run this command to install all the dependencies
-    
-```bash
-    npm install --legacy-peer-deps
-```
-**Note:** As of right now React 19 causes peer dependencies issues with some packages, so the `legacy-peer-deps` flag is required.
+- **Optimized Database Architecture**: Designed an efficient relational database schema using Prisma ORM.
 
-You can start the project on the local server
-    
-```bash
-    npm run dev
- ```
+- **Built Responsive UI**: Developed a fully responsive user interface that works seamlessly across mobile, tablet, and desktop devices, using Tailwind CSS for consistent styling.
 
-It’ll start the template on [localhost:3000](http://localhost:3000). 
+- **Implemented Server-side Rendering**: Utilized Next.js server components for improved SEO and initial page load performance.
 
-The documentation includes all the guides you need for the integrations. 
+- **Created Booking Logic**: Developed complex availability checking and booking management system with real-time updates.
 
 
-### Deploying on PaaS
+## 🔒 Authentication
 
-If you are using a GitHub repo then you can go with free-of-cost and easy-to-use options like [Vercel](https://vercel.com/), or [Netlify](https://netlify.com/) they offer decent-free tiers for Next.js hosting.
+- **Public users**: Can browse vans and view details
+- **Authenticated users**: Can book vans, manage bookings, and update profiles
 
-### 📄 License
-Solid Free is 100% free and open-source, feel free to use with your personal and commercial projects.
+##  📄 License
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-### 💜 Support
-If you like the template, please star this repository to inspire the team to create more stuff like this and reach more users like you!
-
-### ✨ Browse and Download - Best Free [Next.js Templates](https://nextjstemplates.com/templates)
-
-### Update Log
-**29 Jan 2025**
-- Upgraded to Next.js 15
-- Update framer-motion to v12.0.6 for React 19 support.
