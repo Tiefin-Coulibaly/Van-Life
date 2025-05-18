@@ -25,7 +25,6 @@ Van Life is a comprehensive van rental platform built with Next.js 15, TypeScrip
 
 - **Frontend**:
   - Next.js 15 (App Router)
-  - React 19
   - TypeScript
   - Tailwind CSS
 
