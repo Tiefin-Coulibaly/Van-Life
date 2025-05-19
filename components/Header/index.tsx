@@ -214,7 +214,7 @@ const Header = () => {
             </ul>
           </nav>
 
-          <div className="mt-7 flex items-center gap-6 xl:mt-0 hidden sm:flex">
+          <div className="mt-7 flex items-center gap-6 xl:mt-0">
             {session ? (
               // User is signed in - show profile
               <div className="relative">
