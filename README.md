@@ -2,6 +2,9 @@
 
 A full-stack web application for booking premium van rentals, featuring seamless authentication, payments, and a responsive user experience.
 
+**🚀 [View Live Demo](https://van-life-dusky.vercel.app/)** 
+
+
 ![Van Life Screenshot](./public/images/van-life.png)
 
 ## 🌟 Overview
@@ -22,7 +25,6 @@ Van Life is a comprehensive van rental platform built with Next.js 15, TypeScrip
 
 - **Frontend**:
   - Next.js 15 (App Router)
-  - React 19
   - TypeScript
   - Tailwind CSS
 
