@@ -71,34 +71,34 @@ const Header = () => {
   }, []);
 
   const getUserDisplayName = (user) => {
-  if (!user) return null;
-  
-  if (user.name) return user.name;
-  
-  const firstName = user.firstName || '';
-  const lastName = user.lastName || '';
-  
-  const fullName = `${firstName} ${lastName}`.trim();
-  return fullName ;
-};
+    if (!user) return null;
+    
+    if (user.name) return user.name;
+    
+    const firstName = user.firstName || '';
+    const lastName = user.lastName || '';
+    
+    const fullName = `${firstName} ${lastName}`.trim();
+    return fullName;
+  };
 
   return (
     <header
-      className={`container fixed inset-x-0 top-0 z-999  mx-auto  py-7  ${
+      className={`container fixed inset-x-0 top-0 z-999 mx-auto py-7 ${
         stickyMenu
-          ? "bg-white  !py-4  transition duration-100 dark:bg-black"
+          ? "bg-white !py-4 transition duration-100 dark:bg-black"
           : "bg-white"
       }`}
     >
-      <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0">
-        <div className="flex w-full items-center justify-between xl:w-1/4">
+      <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 lg:flex 2xl:px-0">
+        <div className="flex w-full items-center justify-between lg:w-1/4">
           <a href="/">
             <div className="relative h-24 w-24 lg:h-28 lg:w-28">
               <Image
                 src="/images/logo/company-logo_svg.png"
                 alt="logo"
                 fill
-                className="w-full "
+                className="w-full"
               />
             </div>
           </a>
@@ -106,7 +106,7 @@ const Header = () => {
           {/* <!-- Hamburger Toggle BTN --> */}
           <button
             aria-label="hamburger Toggler"
-            className="block xl:hidden"
+            className="block lg:hidden"
             onClick={toggleNavigation}
           >
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
@@ -145,7 +145,7 @@ const Header = () => {
 
         {/* Nav Menu Start */}
         <div
-          className={`xl:visible xl:flex xl:h-auto xl:w-full
+          className={`lg:visible lg:flex lg:h-auto lg:w-full
             ${
               navigationOpen || isMenuAnimating
                 ? "navbar visible transition-all duration-300 ease-in-out"
@@ -156,11 +156,11 @@ const Header = () => {
                 ? "mt-4 h-auto max-h-[400px] rounded-md bg-white p-7.5 opacity-100 shadow-solid-5 dark:bg-blacksection"
                 : "max-h-0 opacity-0"
             }
-            xl:h-auto xl:max-h-full xl:p-0 xl:opacity-100 xl:shadow-none xl:dark:bg-transparent`}
+            lg:h-auto lg:max-h-full lg:p-0 lg:opacity-100 lg:shadow-none lg:dark:bg-transparent`}
         >
           {/* Center the navigation menu */}
-          <nav className="xl:flex xl:flex-1 xl:justify-center">
-            <ul className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-center xl:gap-10">
+          <nav className="lg:flex lg:flex-1 lg:justify-center">
+            <ul className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-10">
               {menuData.map((menuItem, key) => (
                 <li key={key} className={menuItem.submenu && "group relative"}>
                   {menuItem.submenu ? (
@@ -214,7 +214,7 @@ const Header = () => {
             </ul>
           </nav>
 
-          <div className="mt-7 flex items-center gap-6 xl:mt-0">
+          <div className="mt-7 flex items-center gap-6 lg:mt-0 z-999">
             {session ? (
               // User is signed in - show profile
               <div className="relative">
@@ -254,9 +254,9 @@ const Header = () => {
                   </svg>
                 </button>
 
-                {/* User dropdown menu */}
+                {/* User dropdown menu - Fixed positioning for mobile */}
                 {userDropdown && (
-                  <div className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-blacksection">
+                  <div className="absolute -right-40 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-blacksection md:-right-30 xs:-right-30">
                     <Link
                       href="/dashboard"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
