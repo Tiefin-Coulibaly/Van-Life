@@ -4,7 +4,6 @@ import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Testimonial from "@/components/Testimonial";
-import { clearDatabase } from "../lib/actions/clearDatabase";
 
 export const metadata: Metadata = {
   title: "Van Life | Adventure Awaits",
@@ -15,7 +14,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home () {
-  await clearDatabase();
   return (
     <main>
       <Hero />
