@@ -28,8 +28,6 @@ const page = async (props: { params: Promise<{ id: string }> }) => {
   // Update if there's a mismatch
   if (van && isVanAvailableNow !== van.available) {
     await updateVanAvailability(id, isVanAvailableNow);
-    // Force revalidation of this path to reflect the changes
-    revalidatePath(`/vans/${id}`);
   }
 
   return (
